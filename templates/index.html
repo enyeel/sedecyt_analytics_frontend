@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index con Dashboards</title>
+  <style>
+    :root {
+      --cyan-base: #e6ffff;
+      --cyan-soft: #66cfff;
+      --magenta-base: #ff0066;
+      --blue-soft: hsl(210, 79%, 23%);
+      --blue-black: hsl(210, 73%, 17%);
+      --white: #ffffff;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(-45deg, var(--cyan-base), var(--white), var(--cyan-soft));
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Header superior */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    header img {
+      height: 60px; 
+      margin-right: 15px;
+    }
+
+    /* Barra de filtros */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 50px;
+    }
+
+    .filter-bar label {
+      font-weight: bold;
+      color: var(--blue-soft);
+    }
+
+    .filter-bar input[type="date"] {
+      padding: 5px;
+      border: 2px solid var(--blue-soft);
+      border-radius: 6px;
+      outline: none;
+      font-weight: 600;
+      color: var(--blue-soft);
+    }
+
+    .filter-bar button {
+      background: var(--blue-soft);
+      color: var(--white);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .filter-bar button:hover {
+      background: var(--magenta-base);
+    }
+
+    /* Layout principal */
+    .container {
+      display: flex;
+      flex: 1;
+      margin-top: 100px; /* espacio por el header */
+    }
+
+    /* Contenedor de tarjetas */
+    .main-content {
+      flex: 2;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* Panel lateral */
+    .sidebar {
+      flex: 1;
+      background: rgba(255,255,255,0.95);
+      box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+      padding: 20px;
+      border-radius: 15px 0 0 15px;
+      overflow-y: auto;
+      display: none; /* oculto al inicio */
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+      color: var(--blue-soft);
+    }
+
+    .dashboard-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .dashboard-list li {
+      background: var(--cyan-base);
+      border-left: 4px solid var(--blue-soft);
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+      color: var(--blue-black);
+    }
+
+    .dashboard-list li:hover {
+      background: var(--cyan-soft);
+      color: var(--blue-soft);
+    }
+
+    /* Tarjetas estilo YouTube */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 12px 24px rgba(0,0,0,0.25);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .card h3 {
+      margin: 10px;
+      color: var(--blue-soft);
+    }
+
+    .card p {
+      padding: 0 15px 15px;
+      font-size: 0.9rem;
+      color: var(--blue-black);
+    }
+
+    /* Área de visualización de dashboards */
+    .viewer {
+      margin-top: 20px;
+    }
+
+    .viewer iframe {
+      width: 100%;
+      height: 400px;
+      border: 2px solid var(--blue-soft);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header con logo y filtro -->
+  <header>
+    <div style="display:flex; align-items:center;">
+      <img src="c:\Users\usuario\Desktop\PI\estadias.png" alt="Logo de la compañía">
+    </div>
+    <div class="filter-bar">
+      <label for="start-date">De:</label>
+      <input type="date" id="start-date">
+      <label for="end-date">A:</label>
+      <input type="date" id="end-date">
+      <button onclick="filtrar()">Filtrar</button>
+    </div>
+  </header>
+
+  <!-- Contenedor principal -->
+  <div class="container">
+    <!-- Tarjetas -->
+    <div class="main-content">
+      <div class="card" onclick="mostrarDashboards('Dashboard 1', [
+        {nombre: 'Reporte 1A', url: 'reporte1a.html'},
+        {nombre: 'Reporte 1B', url: 'reporte1b.html'}
+      ])">
+        <img src="https://via.placeholder.com/400x200?text=Dashboard+1" alt="Dashboard 1">
+        <h3>Dashboard 1</h3>
+        <p>Descripción breve del Dashboard 1.</p>
+      </div>
+
+      <div class="card" onclick="mostrarDashboards('Dashboard 2', [
+        {nombre: 'Reporte 2A', url: 'reporte2a.html'},
+        {nombre: 'Reporte 2B', url: 'reporte2b.html'}
+      ])">
+        <img src="https://via.placeholder.com/400x200?text=Dashboard+2" alt="Dashboard 2">
+        <h3>Dashboard 2</h3>
+        <p>Descripción breve del Dashboard 2.</p>
+      </div>
+
+      <div class="card" onclick="mostrarDashboards('Dashboard 3', [
+        {nombre: 'Reporte 3A', url: 'reporte3a.html'}
+      ])">
+        <img src="https://via.placeholder.com/400x200?text=Dashboard+3" alt="Dashboard 3">
+        <h3>Dashboard 3</h3>
+        <p>Descripción breve del Dashboard 3.</p>
+      </div>
+
+      <div class="card" onclick="mostrarDashboards('Dashboard 4', [
+        {nombre: 'Reporte 4A', url: 'reporte4a.html'},
+        {nombre: 'Reporte 4B', url: 'reporte4b.html'},
+        {nombre: 'Reporte 4C', url: 'reporte4c.html'}
+      ])">
+        <img src="https://via.placeholder.com/400x200?text=Dashboard+4" alt="Dashboard 4">
+        <h3>Dashboard 4</h3>
+        <p>Descripción breve del Dashboard 4.</p>
+      </div>
+
+      <div class="card" onclick="mostrarDashboards('Dashboard 5', [
+        {nombre: 'Reporte 5A', url: 'reporte5a.html'}
+      ])">
+        <img src="https://via.placeholder.com/400x200?text=Dashboard+5" alt="Dashboard 5">
+        <h3>Dashboard 5</h3>
+        <p>Descripción breve del Dashboard 5.</p>
+      </div>
+
+      <div class="card" onclick="mostrarDashboards('Dashboard 6', [
+        {nombre: 'Reporte 6A', url: 'reporte6a.html'},
+        {nombre: 'Reporte 6B', url: 'reporte6b.html'}
+      ])">
+        <img src="https://via.placeholder.com/400x200?text=Dashboard+6" alt="Dashboard 6">
+        <h3>Dashboard 6</h3>
+        <p>Descripción breve del Dashboard 6.</p>
+      </div>
+    </div>
+
+    <!-- Panel lateral -->
+    <div id="sidebar" class="sidebar">
+      <h3 id="sidebar-title">Dashboards</h3>
+      <ul id="dashboard-list" class="dashboard-list"></ul>
+      <div class="viewer">
+        <iframe id="dashboard-viewer" src="" title="Dashboard"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filtrar() {
+      const inicio = document.getElementById("start-date").value;
+      const fin = document.getElementById("end-date").value;
+      if(inicio && fin){
+        alert(`Filtrando resultados desde ${inicio} hasta ${fin}`);
+        // Aquí puedes implementar la lógica para filtrar dashboards
+      } else {
+        alert("Selecciona ambas fechas para filtrar.");
+      }
+    }
+
+    function mostrarDashboards(titulo, dashboards) {
+      const sidebar = document.getElementById("sidebar");
+      const list = document.getElementById("dashboard-list");
+      const title = document.getElementById("sidebar-title");
+      const viewer = document.getElementById("dashboard-viewer");
+
+      sidebar.style.display = "block";
+      title.textContent = titulo;
+      list.innerHTML = "";
+      viewer.src = ""; // limpio el iframe
+
+      dashboards.forEach(d => {
+        const li = document.createElement("li");
+        li.textContent = d.nombre;
+        li.onclick = () => {
+          viewer.src = d.url;
+        };
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
