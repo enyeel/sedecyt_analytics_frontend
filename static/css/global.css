@@ -52,7 +52,7 @@ header img {
   margin-right: 15px;
 }
 
-/* Botón de ayuda */
+/* Botones del Header */
 .help-btn {
   background: var(--blue-soft);
   border: none;
@@ -71,7 +71,7 @@ header img {
 }
 
 /* ============================= */
-/* Barra Lateral de Ayuda (Sidebar) */
+/* Barra Lateral de Ayuda (Sidebar - Login/Registro) */
 /* ============================= */
 .sidebar {
   height: 100%;
@@ -90,10 +90,6 @@ header img {
 
 .sidebar.open {
   right: 20px;
-}
-
-.sidebar-content {
-  padding: 10px 0;
 }
 
 .close-btn {
@@ -136,9 +132,7 @@ header img {
   margin-bottom: 5px;
 }
 
-/* ============================= */
 /* Estilos Comunes de Formularios (Login/Registro) */
-/* ============================= */
 .login-container {
   background: rgba(255, 255, 255, 0.9);
   padding: 2rem;
@@ -146,17 +140,10 @@ header img {
   width: 350px;
   box-shadow: 0px 8px 22px rgba(0,0,0,0.25);
   text-align: center;
-  animation: fadeIn 1.5s ease;
   margin-top: 120px; 
   z-index: 1;
-  /* Alineación central para login/registro */
   align-self: center; 
   justify-content: center;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .login-container h2 {
@@ -165,65 +152,18 @@ header img {
   font-weight: bold;
 }
 
-.input-group {
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
-  color: var(--blue-soft);
-  font-weight: 600;
-}
-
 .input-group input {
   width: 100%;
   padding: 0.6rem;
   border: 2px solid var(--blue-black);
   border-radius: 8px;
-  outline: none;
-  transition: border 0.3s;
-  color: var(--blue-soft);
-  font-weight: 600;
-}
-
-.input-group input:focus {
-  border: 2px solid var(--blue-soft);
 }
 
 .btn {
-  width: 100%;
-  padding: 0.7rem;
   background: var(--blue-soft);
-  border: none;
-  border-radius: 8px;
   color: var(--white);
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
 }
 
 .btn:hover {
   background: var(--magenta-base);
-  box-shadow: 0px 6px 14px rgba(0,0,0,0.25);
-}
-
-.extra-links {
-  margin-top: 1rem;
-  font-size: 0.85rem;
-}
-
-.extra-links a {
-  color: var(--blue-soft);
-  text-decoration: none;
-  margin: 0 5px;
-  font-weight: bold;
-}
-
-.extra-links a:hover {
-  color: var(--magenta-base);
 }

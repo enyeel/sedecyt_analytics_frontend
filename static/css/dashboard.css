@@ -41,52 +41,43 @@
 
 /* Layout Principal */
 .container {
-  display: flex;
+  display: flex; 
   flex: 1;
   margin-top: 100px; /* espacio por el header */
+  width: 100%;
 }
 
-/* Contenedor de tarjetas */
+/* Contenedor de tarjetas (Vista Inicial) */
 .main-content {
-  flex: 2;
+  flex: 1; 
   padding: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
+  transition: opacity 0.5s ease;
 }
 
-/* Panel lateral de reportes */
-.sidebar {
-  flex: 1;
-  background: rgba(255,255,255,0.95);
-  box-shadow: -4px 0 12px rgba(0,0,0,0.2);
-  padding: 20px;
-  border-radius: 15px 0 0 15px;
-  overflow-y: auto;
-  display: none; /* Se mostrará con JS */
-  max-height: calc(100vh - 100px); /* Altura máxima para evitar desbordamiento */
-}
-
-.sidebar h3 {
-  margin-top: 0;
-  color: var(--blue-soft);
-  text-align: center;
-}
-
-/* Tarjetas estilo YouTube */
+/* Estilo de las Tarjetas */
 .card {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 15px;
   box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
   cursor: pointer;
   text-align: center;
+  border: 3px solid transparent; 
 }
 
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0px 12px 24px rgba(0,0,0,0.25);
+}
+
+/* Estilo para la tarjeta activa (la que se está viendo en detalle) */
+.card.active-card {
+    border: 3px solid var(--magenta-base);
+    box-shadow: 0px 0px 20px rgba(255, 0, 102, 0.5); 
 }
 
 .card img {
@@ -106,11 +97,107 @@
   color: var(--blue-black);
 }
 
-/* Contenedor de la gráfica (canvas) */
-.viewer {
-  margin-top: 20px;
-  min-height: 300px; /* Altura mínima para la gráfica */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ============================= */
+/* Estilos para la Vista Detalle (Layout 1/4 + 3/4) */
+/* ============================= */
+
+/* Ocultar la vista de detalle por defecto */
+#detail-view {
+    display: none; 
+    width: 100%;
+}
+
+/* Condición: Cuando el contenedor principal tiene la clase 'show-detail' */
+#main-app-container.show-detail #card-view {
+    display: none; /* Oculta las tarjetas */
+}
+
+#main-app-container.show-detail #detail-view {
+    display: flex; /* Muestra la vista de detalle */
+    width: 100%;
+    min-height: calc(100vh - 120px); 
+}
+
+.detail-view-container {
+    width: 100%;
+}
+
+/* 1/4 - Panel de lista de sub-reportes (Menú Lateral) */
+.subreport-list-panel {
+    flex: 0 0 25%; 
+    max-width: 300px;
+    background: var(--blue-soft);
+    color: var(--white);
+    padding: 20px 0;
+    overflow-y: auto;
+    border-radius: 10px 0 0 10px;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    
+    /* Configuración para empujar el botón al final */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo para el título del panel lateral (clicleable para cerrar) */
+.subreport-list-panel h3 {
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 15px;
+    margin-top: 0;
+    cursor: pointer; 
+    transition: background 0.3s;
+}
+
+.subreport-list-panel h3:hover {
+    background: var(--blue-black); 
+}
+
+#report-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Permite que la lista ocupe el espacio restante */
+    padding-bottom: 20px; 
+}
+
+.report-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.3s;
+    font-weight: 500;
+}
+
+.report-item:hover {
+    background: var(--blue-black);
+}
+
+.report-item.active {
+    background: var(--magenta-base);
+    font-weight: bold;
+}
+
+/* Estilo para el botón de Volver ubicado al final */
+.volver-btn {
+    width: 80%;
+    align-self: center;
+    margin-bottom: 20px;
+    margin-top: auto; /* Empuja el botón al final del contenedor flex */
+    text-align: center;
+}
+
+/* 3/4 - Visor principal del dashboard */
+.main-viewer-panel {
+    flex: 1; 
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 0 10px 10px 0;
+}
+
+#main-dashboard-viewer {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--blue-soft);
+    border-radius: 8px;
+    min-height: calc(100vh - 140px);
 }

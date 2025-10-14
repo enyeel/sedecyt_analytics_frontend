@@ -23,113 +23,143 @@
     </div>
   </header>
 
-  <div class="container">
-    <div class="main-content">
-      <div class="card" data-dashboard-id="1" data-titulo="Ventas">
-        <img src="https://via.placeholder.com/400x200?text=Dashboard+1" alt="Dashboard 1">
-        <h3>Dashboard 1</h3>
-        <p>Resumen de Ventas y Rendimiento.</p>
-      </div>
-      <div class="card" data-dashboard-id="2" data-titulo="Operaciones">
-        <img src="https://via.placeholder.com/400x200?text=Dashboard+2" alt="Dashboard 2">
-        <h3>Dashboard 2</h3>
-        <p>Métricas de Eficiencia Operacional.</p>
+  <div id="main-app-container" class="container"> 
+    
+    <div id="card-view" class="main-content">
       </div>
 
-      <div class="card" data-dashboard-id="3" data-titulo="Recursos Humanos">
-        <img src="https://via.placeholder.com/400x200?text=Dashboard+3" alt="Dashboard 3">
-        <h3>Dashboard 3</h3>
-        <p>Rotación y Desempeño de Personal.</p>
-      </div>
-
-      <div class="card" data-dashboard-id="4" data-titulo="Finanzas">
-        <img src="https://via.placeholder.com/400x200?text=Dashboard+4" alt="Dashboard 4">
-        <h3>Dashboard 4</h3>
-        <p>Reporte de Ingresos y Egresos.</p>
-      </div>
-
-      <div class="card" data-dashboard-id="5" data-titulo="Marketing">
-        <img src="https://via.placeholder.com/400x200?text=Dashboard+5" alt="Dashboard 5">
-        <h3>Dashboard 5</h3>
-        <p>Campañas y Conversiones.</p>
-      </div>
-
-      <div class="card" data-dashboard-id="6" data-titulo="Inventario">
-        <img src="https://via.placeholder.com/400x200?text=Dashboard+6" alt="Dashboard 6">
-        <h3>Dashboard 6</h3>
-        <p>Control de Almacén y Stock.</p>
-      </div>
-    </div>
-
-    <div id="sidebar" class="sidebar">
-      <h3 id="sidebar-title">Selecciona un Dashboard</h3>
-      <div class="viewer">
-        <canvas id="dashboard-chart"></canvas> 
-      </div>
+    <div id="detail-view" class="detail-view-container">
+        <div id="subreport-list" class="subreport-list-panel">
+            <h3 id="subreport-title">Sub-Reportes</h3> 
+            <ul id="report-list">
+                </ul>
+            
+            <button id="back-to-cards" class="help-btn volver-btn" style="display:none;" onclick="toggleDashboardView(false)">
+                ← Volver a Dashboards
+            </button>
+        </div>
+        
+        <div class="main-viewer-panel">
+            <iframe id="main-dashboard-viewer" src="" title="Visualizador de Reporte"></iframe>
+        </div>
     </div>
   </div>
 
   <script type="module">
-    // Importamos las funciones clave desde nuestros módulos
-    import { getDashboardSummary } from '../static/js/api.js';
-    import { renderDoughnutChart } from '../static/js/charts.js';
+    // IMPORTANTE: Asegúrate de tener este archivo en static/js/
+    import { DASHBOARDS_DATA } from '../static/js/dashboardData.js'; 
 
-    // Función para manejar la lógica de click en las tarjetas
-    async function mostrarDashboardResumen(e) {
-      // 1. Obtener datos del elemento clickeado
-      const card = e.currentTarget;
-      const dashboardId = card.dataset.dashboardId;
-      const titulo = card.dataset.titulo;
+    let currentActiveCardId = null; 
 
-      const sidebar = document.getElementById("sidebar");
-      const title = document.getElementById("sidebar-title");
-      
-      // Mostrar el sidebar
-      sidebar.style.display = "block";
-      title.textContent = `Resumen de ${titulo}`;
-
-      // 2. Obtener las fechas de los filtros
-      const fechaInicio = document.getElementById("start-date").value;
-      const fechaFin = document.getElementById("end-date").value;
-
-      // 3. Llamada a la API (o a la simulación en api.js)
-      const data = await getDashboardSummary(dashboardId, fechaInicio, fechaFin);
-
-      // 4. Renderizar la gráfica
-      if (data && data.labels && data.values) {
-          renderDoughnutChart('dashboard-chart', data);
-      } else {
-          // Manejo de error si la API falla o no devuelve datos
-          title.textContent = "Error al cargar el resumen";
-          document.getElementById('dashboard-chart').style.display = 'none';
-          alert("No se pudieron cargar los datos del dashboard. Revisa la consola.");
-      }
+    function toggleDashboardView(showDetail) {
+        const appContainer = document.getElementById('main-app-container');
+        const backBtn = document.getElementById('back-to-cards');
+        
+        if (showDetail) {
+            appContainer.classList.add('show-detail');
+            backBtn.style.display = 'block';
+        } else {
+            appContainer.classList.remove('show-detail');
+            backBtn.style.display = 'none';
+            currentActiveCardId = null; 
+            
+            // Limpiar el resaltado de la tarjeta activa
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active-card'));
+        }
     }
+    
+    function mostrarSubReports(e) {
+        const card = e.currentTarget;
+        const dashboardId = parseInt(card.dataset.dashboardId);
+        
+        // Lógica de TOGGLE en TARJETA
+        if (currentActiveCardId === dashboardId) {
+            toggleDashboardView(false); 
+            return;
+        }
 
-    // Función para manejar el filtro
-    function filtrar() {
-      const inicio = document.getElementById("start-date").value;
-      const fin = document.getElementById("end-date").value;
-      
-      if(inicio && fin){
-        alert(`Filtrando resultados desde ${inicio} hasta ${fin}. Ahora, ¡haz clic en una tarjeta!`);
-        // Opcional: Volver a cargar el dashboard si ya hay uno abierto
-      } else {
-        alert("Selecciona ambas fechas para filtrar.");
-      }
-    }
+        toggleDashboardView(true);
+        currentActiveCardId = dashboardId;
 
-    // 5. Asignar los Event Listeners al cargar la página
-    document.addEventListener('DOMContentLoaded', () => {
-        // Asignar el click a todas las tarjetas
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', mostrarDashboardResumen);
+        // Resaltar la tarjeta activa
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active-card'));
+        card.classList.add('active-card');
+
+        // Obtener datos y llenar la lista
+        const data = DASHBOARDS_DATA.find(d => d.id === dashboardId);
+        if (!data || !data.subreports || data.subreports.length === 0) {
+            console.error("No se encontraron datos o sub-reportes.");
+            document.getElementById('main-dashboard-viewer').src = "about:blank";
+            document.getElementById('report-list').innerHTML = '';
+            return;
+        }
+        
+        const reportList = document.getElementById('report-list');
+        const viewer = document.getElementById('main-dashboard-viewer');
+        const subreportTitle = document.getElementById('subreport-title');
+
+        subreportTitle.textContent = `${data.titulo} - Reportes`;
+        reportList.innerHTML = ''; 
+        
+        data.subreports.forEach(report => {
+            const li = document.createElement('li');
+            li.textContent = report.nombre;
+            li.classList.add('report-item');
+            
+            li.addEventListener('click', () => {
+                document.querySelectorAll('#report-list .report-item').forEach(item => item.classList.remove('active'));
+                li.classList.add('active'); 
+                viewer.src = report.url; 
+            });
+            reportList.appendChild(li);
         });
 
-        // Asignar el click al botón de filtrar
-        document.getElementById('filter-btn').addEventListener('click', filtrar);
-    });
+        const firstReport = document.querySelector('#report-list .report-item');
+        if (firstReport) {
+            firstReport.click(); 
+        }
+    }
+
+    function renderDashboards() {
+        const cardView = document.getElementById('card-view');
+        cardView.innerHTML = '';
+
+        DASHBOARDS_DATA.forEach(data => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.dashboardId = data.id;
+            card.innerHTML = `
+                <img src="${data.imagen}" alt="Dashboard ${data.id}">
+                <h3>Dashboard ${data.id} (${data.titulo})</h3>
+                <p>${data.descripcion}</p>
+            `;
+            card.addEventListener('click', mostrarSubReports);
+            cardView.appendChild(card);
+        });
+    }
     
+    function filtrar() {
+        const inicio = document.getElementById("start-date").value;
+        const fin = document.getElementById("end-date").value;
+        
+        if(inicio && fin){
+            alert(`Filtros aplicados: ${inicio} a ${fin}. Esta funcionalidad afectaría la URL de los reportes cargados.`);
+        } else {
+            alert("Selecciona ambas fechas para filtrar.");
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderDashboards();
+        document.getElementById('filter-btn').addEventListener('click', filtrar);
+
+        // LÓGICA: Cerrar al dar click en el título del panel lateral
+        document.getElementById('subreport-title').addEventListener('click', () => {
+            if (document.getElementById('main-app-container').classList.contains('show-detail')) {
+                toggleDashboardView(false);
+            }
+        });
+    });
   </script>
 </body>
 </html>
