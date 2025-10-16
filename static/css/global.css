@@ -133,6 +133,14 @@ header img {
 }
 
 /* Estilos Comunes de Formularios (Login/Registro) */
+
+/* 1. Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 2. Contenedor principal del formulario (AJUSTADO PARA CENTRADO HORIZONTAL) */
 .login-container {
   background: rgba(255, 255, 255, 0.9);
   padding: 2rem;
@@ -140,10 +148,12 @@ header img {
   width: 350px;
   box-shadow: 0px 8px 22px rgba(0,0,0,0.25);
   text-align: center;
-  margin-top: 120px; 
+  
+  /* CLAVE: Centrado Horizontal */
+  margin: 120px auto 0 auto; /* El 120px es el margen superior para pasar el header, y 'auto' centra horizontalmente */
+  
   z-index: 1;
-  align-self: center; 
-  justify-content: center;
+  animation: fadeIn 1.5s ease; 
 }
 
 .login-container h2 {
@@ -152,18 +162,69 @@ header img {
   font-weight: bold;
 }
 
+/* 3. Estilos para los grupos de entrada (input-group y label) */
+.input-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: var(--blue-soft);
+  font-weight: 600;
+}
+
 .input-group input {
   width: 100%;
   padding: 0.6rem;
   border: 2px solid var(--blue-black);
   border-radius: 8px;
+  outline: none; 
+  transition: border 0.3s; 
+  color: var(--blue-soft);
+  font-weight: 600;
 }
 
+/* 4. Efecto de enfoque del input */
+.input-group input:focus {
+  border: 2px solid var(--blue-soft);
+}
+
+/* 5. Estilos del botón (btn) */
 .btn {
+  width: 100%; 
+  padding: 0.7rem;
+  border: none; 
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
   background: var(--blue-soft);
   color: var(--white);
 }
 
 .btn:hover {
   background: var(--magenta-base);
+  box-shadow: 0px 6px 14px rgba(0,0,0,0.25);
+}
+
+/* 6. Estilos para los enlaces extra */
+.extra-links {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+.extra-links a {
+  color: var(--blue-soft);
+  text-decoration: none;
+  margin: 0 5px;
+  font-weight: bold;
+}
+
+.extra-links a:hover {
+  color: var(--magenta-base);
 }
