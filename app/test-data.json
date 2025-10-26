@@ -1,0 +1,54 @@
+{
+    "dashboard_name": "Resumen Industrial 2024",
+    "charts": [
+        {
+            "chart_id": "chart-001",
+            "title": "Empresas por Rubro",
+            "type": "bar",
+            "data": {
+                "labels": [
+                    "Automotriz",
+                    "Aeroespacial",
+                    "Alimentos",
+                    "Textil"
+                ],
+                "datasets": [
+                    {
+                        "label": "Número de Empresas",
+                        "data": [
+                            120,
+                            65,
+                            80,
+                            40
+                        ],
+                        "backgroundColor": "rgba(54, 162, 235, 0.6)"
+                    }
+                ]
+            }
+        },
+        {
+            "chart_id": "chart-002",
+            "title": "Planes de Expansión",
+            "type": "pie",
+            "data": {
+                "labels": [
+                    "Con Planes",
+                    "Sin Planes"
+                ],
+                "datasets": [
+                    {
+                        "label": "Planes de Expansión",
+                        "data": [
+                            85,
+                            175
+                        ],
+                        "backgroundColor": [
+                            "rgba(75, 192, 192, 0.6)",
+                            "rgba(255, 99, 132, 0.6)"
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
