@@ -27,8 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # --- ¡¡AQUÍ ESTÁ EL CAMBIO!! ---
-          node-version: '20.9.0' # O simplemente '20'
+          node-version: '20.9.0'
 
       # 2. Instala las dependencias (será súper rápido si el caché funcionó)
       - name: Install Dependencies
@@ -37,7 +36,7 @@ jobs:
       # 3. Construye la app (¡AQUÍ VAN TUS VARIABLES!)
       - name: Build Next.js App
         run: npm run build # Este comando debe generar la carpeta 'out'
-        env: # <-- ¡¡ESTA ES LA RESPUESTA A TU PREGUNTA!!
+        env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       # --- FIN DE PASOS AÑADIDOS ---
@@ -50,5 +49,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SEDECYT_ANALYTICS }} # El secreto que ya tenías
           channelId: live
           projectId: sedecyt-analytics
-          entryPoint: ./out # <-- ¡CRÍTICO! Le dice a Firebase que suba la carpeta 'out'
+          
 
