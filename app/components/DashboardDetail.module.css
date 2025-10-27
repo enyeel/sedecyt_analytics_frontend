@@ -1,0 +1,93 @@
+/* El contenedor principal de 2 columnas */
+.detailContainer {
+    display: flex;
+    width: 100%;
+    max-width: 1600px;
+    /* Ancho máximo total */
+    gap: 1.5rem;
+    /* Aseguramos que ocupe el alto disponible */
+    flex-grow: 1;
+    align-items: stretch;
+    /* Estira las columnas verticalmente */
+}
+
+/* --- Columna 1: Sidebar --- */
+.sidebar {
+    flex: 0 0 280px;
+    /* Ancho fijo de 280px */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    overflow-y: auto;
+    /* Scroll si hay muchos dashboards */
+    height: calc(100vh - 120px);
+    /* Altura - header y padding */
+}
+
+.sidebarTitle {
+    text-align: center;
+    color: var(--blue-soft);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sidebarList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebarItem {
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    color: var(--blue-black);
+    margin-bottom: 0.25rem;
+}
+
+.sidebarItem:hover {
+    background: var(--cyan-base);
+}
+
+.sidebarItem.active {
+    background: var(--blue-soft);
+    color: var(--white);
+    font-weight: 700;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 0.5rem 0;
+}
+
+/* --- Columna 2: Grid de Gráficas --- */
+.chartGrid {
+    flex: 1;
+    /* Ocupa todo el espacio restante */
+    display: grid;
+    /* Columnas automáticas, MÍNIMO 400px de ancho */
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    align-content: start;
+    /* Alinea las tarjetas arriba */
+
+    /* Scroll si hay muchas gráficas */
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+    padding: 0 0.5rem;
+    /* Pequeño padding para el scrollbar */
+}
+
+.noChartsMessage {
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    color: var(--blue-black);
+    /* Ocupa la primera fila del grid */
+    grid-column: 1 / -1;
+}

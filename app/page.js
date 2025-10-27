@@ -1,4 +1,4 @@
-'use client'; // ¡Es un componente de cliente!
+'use client';
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
@@ -7,12 +7,85 @@ import Image from 'next/image';
 // --- Componentes que esta página va a mostrar ---
 import LoginForm from '@/app/components/LoginForm';
 import DashboardHome from '@/app/components/DashboardHome';
-// (Próximamente importaremos el DashboardDetail aquí)
+import DashboardDetail from '@/app/components/DashboardDetail'; // <-- ¡NUEVO!
+
+// --- DATOS FALSOS (Ahora viven aquí) ---
+const MOCK_DASHBOARDS = [
+  {
+    id: 'industrial-2024',
+    title: 'Resumen Industrial 2024',
+    description: 'Análisis del sector automotriz, aeroespacial y textil.',
+    imageUrl: 'https://placehold.co/400x200/003366/FFFFFF?text=Industrial',
+    // Datos de gráficas (basado en tu test_data.json)
+    charts: [
+      {
+        chart_id: "chart-001",
+        title: "Empresas por Rubro",
+        type: "bar",
+        data: {
+          labels: ["Automotriz", "Aeroespacial", "Alimentos", "Textil"],
+          datasets: [
+            {
+              label: "Número de Empresas",
+              data: [120, 65, 80, 40],
+              backgroundColor: "rgba(54, 162, 235, 0.6)",
+            },
+          ],
+        },
+      },
+      {
+        chart_id: "chart-002",
+        title: "Planes de Expansión",
+        type: "pie",
+        data: {
+          labels: ["Con Planes", "Sin Planes"],
+          datasets: [
+            {
+              label: "Planes de Expansión",
+              data: [85, 175],
+              backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 99, 132, 0.6)"],
+            },
+          ],
+        },
+      },
+      {
+        chart_id: "chart-003",
+        title: "Nuevos Empleos (Últimos 6 Meses)",
+        type: "line", // <-- Un tipo nuevo
+        data: {
+          labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
+          datasets: [
+            {
+              label: "Nuevos Empleos",
+              data: [30, 45, 60, 50, 70, 85],
+              borderColor: "rgba(75, 192, 192, 1)",
+              tension: 0.1,
+            },
+          ],
+        },
+      },
+    ]
+  },
+  {
+    id: 'comercio-2024',
+    title: 'Análisis de Comercio',
+    description: 'Reporte de importaciones y exportaciones por sector.',
+    imageUrl: 'https://placehold.co/400x200/556B2F/FFFFFF?text=Comercio',
+    charts: [] // Este no tiene gráficas por ahora
+  },
+  {
+    id: 'empleo-q3-2024',
+    title: 'Reporte de Empleo Q3',
+    description: 'Nuevos empleos generados, salarios promedio y vacantes.',
+    imageUrl: 'https://placehold.co/400x200/FF0066/FFFFFF?text=Empleo',
+    charts: [] // Este no tiene gráficas por ahora
+  },
+];
+// --- Fin de Datos Falsos ---
+
 
 // =============================================
 // --- Componente del Header ---
-// Lo definimos AQUÍ para que pueda recibir el 'headerTitle'
-// y la función 'handleLogout' desde nuestro 'page.js'
 // =============================================
 function AppHeader({ title, onLogout, session }) {
   return (
@@ -35,7 +108,6 @@ function AppHeader({ title, onLogout, session }) {
 
       {/* Lado Derecho: Botones de Utilidad y Logout */}
       <div className="headerActions">
-        {/* Mostramos el botón de Logout solo si hay una sesión activa */}
         {session && (
           <button onClick={onLogout} className="headerButton">
             Cerrar Sesión
@@ -61,13 +133,11 @@ export default function Page() {
 
   // --- LÓGICA DEL "PORTERO" ---
   useEffect(() => {
-    // 1. Ver si ya hay una sesión
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setLoading(false);
       
-      // Si hay sesión, seteamos el título de home
       if (session) {
         setHeaderTitle('Resumen de Dashboards');
       } else {
@@ -76,16 +146,13 @@ export default function Page() {
     };
     getSession();
 
-    // 2. Escuchar cambios (login/logout)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
-        // Si el usuario acaba de hacer login, lo mandamos a 'home'
         if (_event === 'SIGNED_IN') {
           setView('home');
           setHeaderTitle('Resumen de Dashboards');
         }
-        // Si acaba de hacer logout, reseteamos el título
         if (_event === 'SIGNED_OUT') {
           setHeaderTitle('Bienvenido a SEDECYT');
         }
@@ -93,19 +160,18 @@ export default function Page() {
     );
 
     return () => subscription?.unsubscribe();
-  }, []); // El array vacío [] significa: "corre esto solo 1 vez"
+  }, []);
 
   // --- LÓGICA DEL "DIRECTOR" ---
-
-  // Esta función se la pasaremos al componente 'DashboardHome'
   const handleDashboardSelect = (dashboard) => {
-    setSelectedDashboard(dashboard); // Guardamos el dashboard elegido
-    setHeaderTitle(dashboard.title); // ¡Cambiamos el título!
-    setView('dashboard'); // ¡Cambiamos la vista!
-    console.log("Mostrando dashboard:", dashboard.id);
+    // Buscamos el dashboard completo en nuestros datos
+    const fullDashboardData = MOCK_DASHBOARDS.find(d => d.id === dashboard.id);
+    setSelectedDashboard(fullDashboardData);
+    setHeaderTitle(fullDashboardData.title);
+    setView('dashboard');
+    console.log("Mostrando dashboard:", fullDashboardData.id);
   };
 
-  // Esta función se la pasaremos a 'DashboardDetail' (en el futuro)
   const handleGoHome = () => {
     setSelectedDashboard(null);
     setHeaderTitle('Resumen de Dashboards');
@@ -123,40 +189,39 @@ export default function Page() {
   };
 
   // --- RENDERIZADO ---
-
-  // 1. Muestra "Cargando..." mientras el "Portero" revisa la sesión
   if (loading) {
-    return <div>Cargando...</div>; // TODO: Poner un spinner bonito aquí
+    return <div>Cargando...</div>;
   }
 
-  // 2. El "Portero" y "Director" deciden qué mostrar
   return (
     <>
-      {/* El Header siempre se muestra, pero su título y botones cambian */}
       <AppHeader
         title={headerTitle}
         onLogout={handleLogout}
         session={session}
       />
 
-      {/* El 'mainContainer' centra todo (definido en globals.css) */}
       <main className="mainContainer">
         {!session ? (
-          // A. Si NO hay sesión, el "Portero" muestra el Login
           <LoginForm onLogin={handleLogin} />
         ) : (
-          // B. Si SÍ hay sesión, el "Director" decide qué vista mostrar
           <>
             {view === 'home' && (
-              <DashboardHome onDashboardSelect={handleDashboardSelect} />
+              // Le pasamos la lista de dashboards
+              <DashboardHome 
+                dashboards={MOCK_DASHBOARDS} 
+                onDashboardSelect={handleDashboardSelect} 
+              />
             )}
             
             {view === 'dashboard' && (
-              // ¡Aquí irá nuestro siguiente componente!
-              <div>
-                <h2>Mostrando el Dashboard: {selectedDashboard.title}</h2>
-                <button onClick={handleGoHome}>← Volver a Inicio</button>
-              </div>
+              // ¡Renderizamos el nuevo componente de Detalle!
+              <DashboardDetail
+                selectedDashboard={selectedDashboard}
+                allDashboards={MOCK_DASHBOARDS}
+                onGoHome={handleGoHome}
+                onDashboardSelect={handleDashboardSelect} // Para la sidebar
+              />
             )}
           </>
         )}

@@ -1,0 +1,36 @@
+.chartCard {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    /* Hacemos que la tarjeta ocupe el espacio de grid asignado */
+    display: flex;
+    flex-direction: column;
+}
+
+.chartTitle {
+    text-align: center;
+    color: var(--blue-soft);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.chartContainer {
+    /* Esto es clave para que la gráfica sea responsive
+     y no se desborde de su contenedor */
+    position: relative;
+    flex-grow: 1;
+    /* Ocupa el espacio restante */
+    width: 100%;
+    height: 300px;
+    /* Damos una altura base */
+}
+
+/* La librería chart.js pondrá un <canvas> aquí.
+   Este CSS asegura que ocupe todo el .chartContainer
+*/
+.chartContainer canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
