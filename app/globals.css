@@ -1,111 +1,133 @@
 /* ============================= */
-/* Variables de Color (¡IMPORTANTE!) */
+/* Variables de Color (Paleta Oficial) */
 /* ============================= */
 :root {
-  --cyan-base: #e6ffff;
-  --cyan-soft: #66cfff;
-  --magenta-base: #ff0066;
-  --blue-soft: hsl(210, 79%, 23%);
-  --blue-black: hsl(210, 73%, 17%);
-  --white: #ffffff;
+  /* --- Valores HSL Puros (PARA JAVASCRIPT) --- */
+  /* Estos son los valores base que usa ChartCard.js */
+  --color-brand-sedecyt-hsl: 207, 100%, 26%;
+  --color-primary-magenta-hsl: 328, 77%, 55%;
+  --color-secondary-blue-hsl: 197, 76%, 57%;
+  --color-accent-lime-hsl: 67, 100%, 42%;
+  --color-accent-yellow-hsl: 48, 100%, 50%;
+
+  /* --- Color de Fondo (Neutrales) --- */
+  --color-background: hsl(220, 50%, 98%);
+  --color-surface: hsl(0, 0%, 100%);
+  --color-background-nav: hsl(0, 0%, 100%);
+  
+  /* --- Colores de Texto --- */
+  --color-text-primary: hsl(210, 73%, 17%);
+  --color-text-secondary: hsl(210, 40%, 40%);
+  
+  
+  /* --- Colores de Marca (PARA CSS) --- */
+  /* Usan las variables HSL de arriba */
+  --color-brand-sedecyt: hsl(var(--color-brand-sedecyt-hsl));
+  --color-brand-sedecyt-light: hsl(var(--color-brand-sedecyt-hsl), 75%); /* +L */
+  --color-brand-sedecyt-dark: hsl(var(--color-brand-sedecyt-hsl), 15%);  /* -L */
+
+  /* --- Color Primario (PARA CSS) --- */
+  --color-primary-magenta: hsl(var(--color-primary-magenta-hsl));
+  --color-primary-magenta-light: hsl(var(--color-primary-magenta-hsl), 75%);
+  --color-primary-magenta-dark: hsl(var(--color-primary-magenta-hsl), 40%);
+
+  /* --- Color Secundario (PARA CSS) --- */
+  --color-secondary-blue: hsl(var(--color-secondary-blue-hsl));
+  --color-secondary-blue-light: hsl(var(--color-secondary-blue-hsl), 80%);
+  --color-secondary-blue-dark: hsl(var(--color-secondary-blue-hsl), 40%);
+
+  /* --- Acentos (PARA CSS) --- */
+  --color-accent-lime: hsl(var(--color-accent-lime-hsl));
+  --color-accent-lime-light: hsl(var(--color-accent-lime-hsl), 70%);
+  --color-accent-lime-dark: hsl(var(--color-accent-lime-hsl), 30%);
+
+  --color-accent-yellow: hsl(var(--color-accent-yellow-hsl));
+  --color-accent-yellow-light: hsl(var(--color-accent-yellow-hsl), 75%);
+  --color-accent-yellow-dark: hsl(var(--color-accent-yellow-hsl), 40%);
 }
 
 /* ============================= */
-/* Estilos Generales y Animación */
+/* Estilos Generales (Actualizados) */
 /* ============================= */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(-45deg, var(--cyan-base), var(--white), var(--cyan-soft));
-  background-size: 400% 400%;
-  animation: gradientMove 12s ease infinite;
+  /* Usamos tu nuevo color de fondo */
+  background: var(--color-background);
+  color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
-  color: var(--blue-black);
 }
 
-@keyframes gradientMove {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Contenedor genérico para centrar vistas 
-  (Lo usaremos en page.js y layout.js) 
-*/
+/* Contenedor genérico para centrar vistas */
 .mainContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Alineamos arriba */
   flex: 1;
+  width: 100%;
   padding: 2rem;
-  margin-top: 80px;
-  /* Espacio para el header fijo */
+  margin-top: 90px; /* Espacio para el header fijo (ajustado) */
+  box-sizing: border-box; /* Asegura que el padding no desborde */
 }
 
 
 /* ============================= */
-/* Header Corporativo (¡Global!) */
+/* Header Corporativo (Actualizado) */
 /* ============================= */
 .appHeader {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 10px 30px;
-  background: rgba(255, 255, 255, 0.9);
+  padding: 15px 30px; /* Un poco más de padding */
+  background: var(--color-background-nav); /* Usamos el fondo de NAV */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
   z-index: 1000;
   box-sizing: border-box;
+  border-bottom: 1px solid hsl(220, 25%, 90%); /* Borde sutil */
+  height: 90px; /* Altura fija */
 }
 
 .appHeader img {
-  height: 60px;
+  height: 60px; /* Mantenemos el alto de 60px */
+  width: auto; /* Dejamos que el ancho sea automático */
 }
 
 .headerButton {
-  background: var(--blue-soft);
+  background: var(--color-brand-sedecyt); /* Botón con color de marca */
   border: none;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
-  color: var(--white);
+  color: var(--color-surface); /* Texto blanco */
   font-size: 0.9rem;
 }
 
 .headerButton:hover {
-  background: var(--magenta-base);
+  background: var(--color-primary-magenta); /* Hover con el magenta */
 }
 
 .headerTitle {
-  color: var(--blue-black);
+  color: var(--color-text-primary);
   text-align: center;
-  /* Ocupa el espacio del medio */
   flex-grow: 1; 
-  /* Quitamos márgenes por defecto */
-  margin: 0; 
+  margin: 0 2rem; /* Espacio a los lados */
 }
 .headerTitle h2 {
   margin: 0;
   font-size: 1.5rem;
+  font-weight: 600; /* Un poco menos grueso que 'bold' */
 }
 .headerActions {
-  /* Espacio para futuros botones (dark mode, etc) */
   display: flex;
   gap: 1rem;
 }
+

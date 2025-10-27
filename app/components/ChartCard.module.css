@@ -17,14 +17,16 @@
 }
 
 .chartContainer {
-    /* Esto es clave para que la gráfica sea responsive
+  /* Esto es clave para que la gráfica sea responsive
      y no se desborde de su contenedor */
-    position: relative;
-    flex-grow: 1;
-    /* Ocupa el espacio restante */
-    width: 100%;
-    height: 300px;
-    /* Damos una altura base */
+  position: relative;
+  width: 100%;
+  
+  /* --- ¡AQUÍ ESTÁ EL ARREGLO! --- */
+  /* Usamos aspect-ratio en lugar de altura fija */
+  /* 4 / 3 es bueno para barras y líneas */
+  /* Puedes ajustarlo o hacerlo dinámico si quieres */
+  aspect-ratio: 4 / 3;
 }
 
 /* La librería chart.js pondrá un <canvas> aquí.

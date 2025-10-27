@@ -149,10 +149,6 @@ export default function Page() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
-        if (_event === 'SIGNED_IN') {
-          setView('home');
-          setHeaderTitle('Resumen de Dashboards');
-        }
         if (_event === 'SIGNED_OUT') {
           setHeaderTitle('Bienvenido a SEDECYT');
         }
