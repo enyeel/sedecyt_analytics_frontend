@@ -1,0 +1,129 @@
+/* Esto es un CSS Module. 
+  Las clases que definas aquí (ej. .loginContainer)
+  serán "hasheadas" por Next.js (ej. LoginForm_loginContainer__aB_12)
+  para que NUNCA choquen con otros archivos CSS.
+*/
+
+/* Copiamos tus estilos de global.css y los adaptamos */
+.loginContainer {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2.5rem;
+    /* Un poco más de padding */
+    border-radius: 15px;
+    width: 100%;
+    /* El 'portero' (page.js) definirá el ancho max */
+    max-width: 400px;
+    /* Ancho máximo del formulario */
+    box-shadow: 0px 8px 22px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    z-index: 1;
+    animation: fadeIn 1s ease;
+    /* Animación más rápida */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.title {
+    margin-bottom: 1.5rem;
+    color: var(--blue-soft);
+    /* Asume que :root está en globals.css */
+    font-weight: bold;
+}
+
+.inputGroup {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.inputGroup label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: var(--blue-soft);
+    font-weight: 600;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 0.75rem;
+    /* Un poco más grande */
+    border: 2px solid var(--blue-black);
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+    color: var(--blue-soft);
+    font-weight: 600;
+    box-sizing: border-box;
+    /* Importante para que el padding no rompa el width */
+}
+
+.inputGroup input:focus {
+    border: 2px solid var(--blue-soft);
+    box-shadow: 0 0 10px rgba(54, 162, 235, 0.5);
+}
+
+.btn {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    background: var(--blue-soft);
+    color: var(--white);
+}
+
+.btn:hover {
+    background: var(--magenta-base);
+    box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* Estilo para el botón de "Cargando..." */
+.btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.extraLinks {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.extraLinks a {
+    color: var(--blue-soft);
+    text-decoration: none;
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+.extraLinks a:hover {
+    color: var(--magenta-base);
+}
+
+/* Mensaje de Error */
+.errorMessage {
+    color: #D8000C;
+    /* Rojo error */
+    background-color: #FFD2D2;
+    /* Fondo rojo claro */
+    border: 1px solid #D8000C;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+}
