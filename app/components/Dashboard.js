@@ -11,51 +11,51 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 // Esta función "desempaca" y decide qué gráfico renderizar
 function ChartRenderer({ chart }) {
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: chart.title,
-            },
-        },
-    };
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: chart.title,
+      },
+    },
+  };
 
-    if (chart.type === 'bar') {
-        return <Bar options={options} data={chart.data} />;
-    }
-    if (chart.type === 'pie') {
-        return <Pie options={options} data={chart.data} />;
-    }
-    return null;
+  if (chart.type === 'bar') {
+    return <Bar options={options} data={chart.data} />;
+  }
+  if (chart.type === 'pie') {
+    return <Pie options={options} data={chart.data} />;
+  }
+  return null;
 }
 
 // Este es tu componente de Dashboard
 // Le pasamos 'session' por si lo necesitas, y un botón de Logout
 export default function Dashboard({ session, onLogout }) {
-    return (
-        <div className="dashboard-container">
-            <div className="dashboard-header">
-                <h1>{dashboardData.dashboard_name}</h1>
-                <button onClick={onLogout} className="btn-logout">
-                    Cerrar Sesión
-                </button>
-            </div>
-            <p>Bienvenido, {session.user.email}</p>
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1>{dashboardData.dashboard_name}</h1>
+        <button onClick={onLogout} className="btn-logout">
+          Cerrar Sesión
+        </button>
+      </div>
+      <p>Bienvenido, {session.user.email}</p>
+      
+      <div className="charts-grid">
+        {dashboardData.charts.map((chart) => (
+          <div key={chart.chart_id} className="chart-card">
+            <ChartRenderer chart={chart} />
+          </div>
+        ))}
+      </div>
 
-            <div className="charts-grid">
-                {dashboardData.charts.map((chart) => (
-                    <div key={chart.chart_id} className="chart-card">
-                        <ChartRenderer chart={chart} />
-                    </div>
-                ))}
-            </div>
-
-            {/* Estilos para el dashboard */}
-            <style jsx global>{`
+      {/* Estilos para el dashboard */}
+      <style jsx global>{`
         .dashboard-container {
           width: 90%;
           max-width: 1200px;
@@ -92,6 +92,6 @@ export default function Dashboard({ session, onLogout }) {
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 }

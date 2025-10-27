@@ -91,3 +91,21 @@ body {
 .headerButton:hover {
   background: var(--magenta-base);
 }
+
+.headerTitle {
+  color: var(--blue-black);
+  text-align: center;
+  /* Ocupa el espacio del medio */
+  flex-grow: 1; 
+  /* Quitamos márgenes por defecto */
+  margin: 0; 
+}
+.headerTitle h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.headerActions {
+  /* Espacio para futuros botones (dark mode, etc) */
+  display: flex;
+  gap: 1rem;
+}

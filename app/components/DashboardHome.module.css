@@ -1,0 +1,61 @@
+/* El contenedor del grid (estilo YouTube) */
+.gridContainer {
+    display: grid;
+    /* Crea columnas automáticas:
+     - minmax(300px, 1fr) significa:
+     - "Cada columna debe medir MÍNIMO 300px"
+     - "Si hay espacio, que crezcan por igual (1fr)"
+     - "auto-fit" las acomoda automáticamente
+  */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    /* Un ancho máximo para que no se estire infinito */
+    padding: 1rem;
+}
+
+/* La tarjeta individual */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    /* Para que la imagen no se salga */
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cardImage {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    /* Recorta la imagen para que llene el espacio */
+    display: block;
+}
+
+.cardContent {
+    padding: 1rem 1.5rem;
+}
+
+.cardTitle {
+    margin: 0 0 0.5rem 0;
+    color: var(--blue-soft);
+    /* Variable de globals.css */
+}
+
+.cardDescription {
+    font-size: 0.9rem;
+    color: var(--blue-black);
+    /* Limita el texto a 2 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
