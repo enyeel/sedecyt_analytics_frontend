@@ -1,46 +1,60 @@
-//  /app/page.js
+"use client"; // ¡El portero DEBE ser un Client Component!
 
-// This line tells Next.js this is a Client-Side (CSR) component.
-// This is necessary because charts are interactive and run in the browser.
-'use client'; 
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient'; // Nuestro cliente
+import LoginForm from '@/app/components/LoginForm'; // El formulario
+import Dashboard from '@/app/components/Dashboard'; // El dashboard
+import '@/app/globals.css'; // Tus estilos globales
 
-// Import chart components
-import { Bar, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+// Esta es la ÚNICA página que el usuario visita al inicio.
+export default function HomePage() {
+  
+  // 'session' es la clave. Si es 'null', no hay sesión.
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-// Import your test data
-import dashboardData from './test-data.json';
+  // useEffect se ejecuta UNA VEZ cuando el componente carga
+  useEffect(() => {
+    // 1. Obtenemos la sesión activa si existe (ej. si recarga la página)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
 
-// Register the chart components
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
+    // 2. Escuchamos CAMBIOS en la sesión (Login o Logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        setLoading(false);
+      }
+    );
 
-// This is your "unpacking" function
-function ChartRenderer({ chart }) {
-  if (chart.type === 'bar') {
-    return <Bar data={chart.data} options={{ title: { display: true, text: chart.title } }} />;
+    // Función de limpieza: deja de escuchar cuando el componente se "desmonta"
+    return () => subscription.unsubscribe();
+  }, []); // El array vacío [] asegura que esto solo corra una vez
+
+  // Función para pasarle al botón de logout
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    // onAuthStateChange se encargará de poner 'session' en null
+  };
+  
+  // --- El Renderizado Condicional ---
+  // Si está cargando, no mostramos nada (o un spinner)
+  if (loading) {
+    return <div>Cargando...</div>; // O un componente de Spinner
   }
-  if (chart.type === 'pie') {
-    return <Pie data={chart.data} options={{ title: { display: true, text: chart.title } }} />;
-  }
-  return null;
-}
 
-// This is your main page
-export default function DashboardPage() {
+  // Esta es la lógica principal:
+  // Si NO hay sesión... muestra el Login.
+  // Si SÍ hay sesión... muestra el Dashboard.
   return (
     <div>
-      <h1>{dashboardData.dashboard_name}</h1>
-      <div style={{ display: 'flex', gap: '2rem' }}>
-        
-        {/* Loop through (unpack) the charts and render them */}
-        {dashboardData.charts.map(chart => (
-          <div key={chart.chart_id} style={{ width: '400px', height: '400px' }}>
-            <h2>{chart.title}</h2>
-            <ChartRenderer chart={chart} />
-          </div>
-        ))}
-
-      </div>
+      {!session ? (
+        <LoginForm />
+      ) : (
+        <Dashboard session={session} onLogout={handleLogout} />
+      )}
     </div>
   );
 }
