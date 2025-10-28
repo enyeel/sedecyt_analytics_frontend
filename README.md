@@ -100,7 +100,7 @@ Instructions to get the project running locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/enyeel/sedecyt_analytics_fronend.git
+git clone https://github.com/enyeel/sedecyt_analytics_frontend.git
 cd sedecyt_analytics_fronend
 ```
 
