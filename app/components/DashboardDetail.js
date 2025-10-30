@@ -29,7 +29,7 @@ export default function DashboardDetail({
 
                     <hr className={styles.divider} />
 
-                    {/* Mapeamos TODOS los dashboards para la navegación */}
+                    {/* Mapeamos TODOS los dashboards para la navegación AGREGAR BPTON DE DESCARGAR A CADA UNO*/}
                     {allDashboards.map(dash => (
                         <li
                             key={dash.id}
