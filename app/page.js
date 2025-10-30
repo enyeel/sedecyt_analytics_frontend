@@ -138,11 +138,6 @@ export default function Page() {
       setSession(session);
       setLoading(false);
       
-      if (session) {
-        setHeaderTitle('Resumen de Dashboards');
-      } else {
-        setHeaderTitle('Bienvenido a SEDECYT');
-      }
     };
     getSession();
 
