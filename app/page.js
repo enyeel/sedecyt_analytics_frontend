@@ -3,86 +3,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import Image from 'next/image';
-
+  
 // --- Componentes que esta página va a mostrar ---
 import LoginForm from '@/app/components/LoginForm';
 import DashboardHome from '@/app/components/DashboardHome';
 import DashboardDetail from '@/app/components/DashboardDetail'; // <-- ¡NUEVO!
 
-// --- DATOS FALSOS (Ahora viven aquí) ---
-const MOCK_DASHBOARDS = [
-  {
-    id: 'industrial-2024',
-    title: 'Resumen Industrial 2024',
-    description: 'Análisis del sector automotriz, aeroespacial y textil.',
-    imageUrl: 'https://placehold.co/400x200/003366/FFFFFF?text=Industrial',
-    // Datos de gráficas (basado en tu test_data.json)
-    charts: [
-      {
-        chart_id: "chart-001",
-        title: "Empresas por Rubro",
-        type: "bar",
-        data: {
-          labels: ["Automotriz", "Aeroespacial", "Alimentos", "Textil"],
-          datasets: [
-            {
-              label: "Número de Empresas",
-              data: [120, 65, 80, 40],
-              backgroundColor: "rgba(54, 162, 235, 0.6)",
-            },
-          ],
-        },
-      },
-      {
-        chart_id: "chart-002",
-        title: "Planes de Expansión",
-        type: "pie",
-        data: {
-          labels: ["Con Planes", "Sin Planes"],
-          datasets: [
-            {
-              label: "Planes de Expansión",
-              data: [85, 175],
-              backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 99, 132, 0.6)"],
-            },
-          ],
-        },
-      },
-      {
-        chart_id: "chart-003",
-        title: "Nuevos Empleos (Últimos 6 Meses)",
-        type: "line", // <-- Un tipo nuevo
-        data: {
-          labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"],
-          datasets: [
-            {
-              label: "Nuevos Empleos",
-              data: [30, 45, 60, 50, 70, 85],
-              borderColor: "rgba(75, 192, 192, 1)",
-              tension: 0.1,
-            },
-          ],
-        },
-      },
-    ]
-  },
-  {
-    id: 'comercio-2024',
-    title: 'Análisis de Comercio',
-    description: 'Reporte de importaciones y exportaciones por sector.',
-    imageUrl: 'https://placehold.co/400x200/556B2F/FFFFFF?text=Comercio',
-    charts: [] // Este no tiene gráficas por ahora
-  },
-  {
-    id: 'empleo-q3-2024',
-    title: 'Reporte de Empleo Q3',
-    description: 'Nuevos empleos generados, salarios promedio y vacantes.',
-    imageUrl: 'https://placehold.co/400x200/FF0066/FFFFFF?text=Empleo',
-    charts: [] // Este no tiene gráficas por ahora
-  },
-];
-// --- Fin de Datos Falsos ---
-
+// --- Fin de Datos Falsos --- We will fetch this from the backend now ---
 
 // =============================================
 // --- Componente del Header ---
@@ -125,6 +52,10 @@ export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // --- ESTADO DE DATOS ---
+  const [dashboards, setDashboards] = useState([]);
+  const [error, setError] = useState(null);
 
   // --- ESTADO DEL "DIRECTOR" (Navegación) ---
   const [view, setView] = useState('home'); // 'home' o 'dashboard'
@@ -136,8 +67,32 @@ export default function Page() {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-      setLoading(false);
-      
+
+      if (session) {
+        try {
+          // Fetch dashboards only if the user is logged in
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboards`, {
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          setDashboards(data);
+        } catch (e) {
+          console.error("Failed to fetch dashboards:", e);
+          setError("No se pudieron cargar los dashboards. Intenta de nuevo más tarde.");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        // If there's no session, we're not loading dashboard data, so stop loading.
+        setLoading(false);
+      }
     };
     getSession();
 
@@ -156,7 +111,7 @@ export default function Page() {
   // --- LÓGICA DEL "DIRECTOR" ---
   const handleDashboardSelect = (dashboard) => {
     // Buscamos el dashboard completo en nuestros datos
-    const fullDashboardData = MOCK_DASHBOARDS.find(d => d.id === dashboard.id);
+    const fullDashboardData = dashboards.find(d => d.id === dashboard.id);
     setSelectedDashboard(fullDashboardData);
     setHeaderTitle(fullDashboardData.title);
     setView('dashboard');
@@ -184,6 +139,10 @@ export default function Page() {
     return <div>Cargando...</div>;
   }
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <>
       <AppHeader
@@ -199,8 +158,8 @@ export default function Page() {
           <>
             {view === 'home' && (
               // Le pasamos la lista de dashboards
-              <DashboardHome 
-                dashboards={MOCK_DASHBOARDS} 
+              <DashboardHome
+                dashboards={dashboards}
                 onDashboardSelect={handleDashboardSelect} 
               />
             )}
@@ -209,7 +168,7 @@ export default function Page() {
               // ¡Renderizamos el nuevo componente de Detalle!
               <DashboardDetail
                 selectedDashboard={selectedDashboard}
-                allDashboards={MOCK_DASHBOARDS}
+                allDashboards={dashboards}
                 onGoHome={handleGoHome}
                 onDashboardSelect={handleDashboardSelect} // Para la sidebar
               />
