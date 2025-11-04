@@ -122,11 +122,9 @@ export default function ChartCard({ chart }) {
         })
     };
 
-
-    // --- ¡AQUÍ ESTÁ EL ARREGLO DEL BUG DE ESTIRAMIENTO! ---
     const options = {
         responsive: true,
-        maintainAspectRatio: false, // <-- ¡¡ESTA ES LA LÍNEA!!
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top',
