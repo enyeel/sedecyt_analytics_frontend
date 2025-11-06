@@ -11,6 +11,8 @@ export default function LoginForm({ onLogin }) {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    // ⬇️ [NUEVO] Estado para controlar el modal de FAQ ⬇️
+    const [isFaqOpen, setIsFaqOpen] = useState(false); 
 
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevenimos que el form recargue la página
@@ -18,7 +20,7 @@ export default function LoginForm({ onLogin }) {
         setErrorMessage(null); // Limpiamos errores previos
 
         try {
-            // Usamos el email y password del "estado"
+            // Usamos el email y password del \"estado\"
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
@@ -29,36 +31,51 @@ export default function LoginForm({ onLogin }) {
                 console.error("Error de Supabase:", error.message);
                 setErrorMessage(error.message || "Error al iniciar sesión. Verifica tus credenciales.");
             } else if (data.session) {
-                // ¡Éxito! Llamamos a la función que nos pasó el "portero"
+                // ¡Éxito! Llamamos a la función que nos pasó el \"portero\"
                 onLogin(data.session);
-            } else {
-                // Caso raro
-                setErrorMessage("No se pudo obtener la sesión. Intenta de nuevo.");
             }
         } catch (error) {
-            console.error("Error en el bloque catch:", error);
-            setErrorMessage("Ocurrió un error inesperado. Revisa la consola.");
+            setErrorMessage("Error de conexión inesperado.");
         } finally {
-            // Pase lo que pase, dejamos de "cargar"
             setLoading(false);
         }
     };
 
-    // Esto es tu login.html "traducido" a JSX
+    // ⬇️ [NUEVO] Lista de preguntas y respuestas para el FAQ ⬇️
+    const faqs = [
+        {
+            q: '¿Cómo restablezco mi contraseña?',
+            a: 'Usa el enlace "¿Olvidaste tu contraseña?" debajo del formulario de inicio de sesión. Recibirás un correo electrónico con instrucciones para generar una nueva. si eres Romel buena suerte',
+        },
+        {
+            q: '¿Quién puede acceder a este sistema?',
+            a: 'El acceso está restringido a personal autorizado de SEDECYT. Si crees que deberías tener acceso, contacta al administrador del sistema.',
+        },
+        {
+            q: '¿Puedo exportar los datos de las gráficas?',
+            a: 'Sí, la plataforma permite descargar los datos y las imágenes de las gráficas en los módulos de Dashboard Home y Detalle.',
+        },
+        {
+            q: '¿Tienes una queja?',
+            a: 'Lol, que mal.',
+        },
+                {
+            q: '¿El fondo esta verde?',
+            a: 'RACISTA, MI PROBLEMA NO ES.',
+        },
+    ];
+
     return (
+        // El contenedor principal del formulario
         <div className={styles.loginContainer}>
             <h2 className={styles.title}>Iniciar Sesión</h2>
+            <p className={styles.subtitle}>Portal de Analítica SEDECYT</p>
+            
+            {/* Mensaje de error */}
+            {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
-            {/* Si hay un mensaje de error, lo mostramos aquí */}
-            {errorMessage && (
-                <div className={styles.errorMessage}>
-                    {errorMessage}
-                </div>
-            )}
-
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} className={styles.loginForm}>
                 <div className={styles.inputGroup}>
-                    {/* 'htmlFor' en lugar de 'for' */}
                     <label htmlFor="email">Correo Electrónico</label>
                     <input
                         type="email"
@@ -92,6 +109,46 @@ export default function LoginForm({ onLogin }) {
                 {/* Estos links por ahora no hacen nada, pero ahí están */}
                 <a href="#">¿Olvidaste tu contraseña?</a>
             </div>
+
+            {/* ========================================= */}
+            {/* ⬇️ [NUEVO] BOTÓN Y MODAL FAQ ⬇️ */}
+            {/* ========================================= */}
+            <button
+                className={styles.faqButton} 
+                onClick={() => setIsFaqOpen(true)}
+                aria-label="Abrir Preguntas Frecuentes"
+                title="Ayuda y Preguntas Frecuentes"
+            >
+                ❓
+            </button>
+
+            {isFaqOpen && (
+                <div className={styles.faqModalOverlay} onClick={() => setIsFaqOpen(false)}>
+                    <div
+                        className={styles.faqModalContent}
+                        // Evita que el clic en el modal cierre el overlay
+                        onClick={(e) => e.stopPropagation()} 
+                    >
+                        <button
+                            className={styles.faqCloseButton}
+                            onClick={() => setIsFaqOpen(false)}
+                            aria-label="Cerrar"
+                        >
+                            &times;
+                        </button>
+                        <h2>Preguntas Frecuentes</h2>
+                        <div className={styles.faqList}>
+                            {faqs.map((item, index) => (
+                                <div key={index} className={styles.faqItem}>
+                                    <h4 className={styles.faqQuestion}>{item.q}</h4>
+                                    <p className={styles.faqAnswer}>{item.a}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+            
         </div>
     );
 }
