@@ -67,14 +67,6 @@ export default function Page() {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-<<<<<<< HEAD
-      setLoading(false);
-      
-      if (session) {
-        setHeaderTitle('Resumen de Dashboards');
-      } else {
-        setHeaderTitle('Bienvenido a SEDECYT');
-=======
 
       if (session) {
         try {
@@ -100,7 +92,6 @@ export default function Page() {
       } else {
         // If there's no session, we're not loading dashboard data, so stop loading.
         setLoading(false);
->>>>>>> b1ea3f24112b16cc0812e3e2dedb662a5058018f
       }
     };
     getSession();
