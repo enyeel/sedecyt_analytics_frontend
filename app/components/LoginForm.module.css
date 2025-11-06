@@ -36,27 +36,49 @@
 .title {
     margin-bottom: 1.5rem;
     color: var(--blue-soft);
-    /* Asume que :root está en globals.css */
-    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.subtitle {
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.errorMessage {
+    background: #ffcccc;
+    color: #cc0000;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* --- Formulario --- */
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .inputGroup {
-    margin-bottom: 1.25rem;
     text-align: left;
 }
 
 .inputGroup label {
     display: block;
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
-    color: var(--blue-soft);
+    margin-bottom: 0.4rem;
     font-weight: 600;
+    color: var(--blue-black);
+    font-size: 0.9rem;
 }
 
 .inputGroup input {
     width: 100%;
-    padding: 0.75rem;
-    /* Un poco más grande */
+    padding: 0.8rem 1rem;
     border: 2px solid var(--blue-black);
     border-radius: 8px;
     outline: none;
@@ -93,37 +115,132 @@
 
 /* Estilo para el botón de "Cargando..." */
 .btn:disabled {
-    background: #ccc;
+    background: var(--gray-light);
+    color: var(--color-text-secondary);
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 .extraLinks {
-    margin-top: 1rem;
-    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    text-align: right;
 }
 
 .extraLinks a {
-    color: var(--blue-soft);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
     text-decoration: none;
-    margin: 0 5px;
-    font-weight: bold;
+    transition: color 0.3s;
 }
 
 .extraLinks a:hover {
-    color: var(--magenta-base);
+    color: var(--blue-soft);
 }
 
-/* Mensaje de Error */
-.errorMessage {
-    color: #D8000C;
-    /* Rojo error */
-    background-color: #FFD2D2;
-    /* Fondo rojo claro */
-    border: 1px solid #D8000C;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 1.25rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+
+/* ========================================= */
+/* ⬇️ [NUEVO] ESTILOS PARA EL BOTÓN Y MODAL FAQ ⬇️ */
+/* ========================================= */
+
+.faqButton {
+    /* Posición fija para que flote en la esquina */
+    position: fixed;
+    bottom: 30px; 
+    right: 30px;
+    
+    /* Estilos del botón */
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    line-height: 50px; /* Centra el emoji */
     text-align: center;
+
+    /* Colores y forma */
+    background: var(--color-primary-magenta); /* Color llamativo de tu paleta */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Botón circular */
+    
+    /* Sombra y transición */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 1000; 
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.faqButton:hover {
+    background: var(--color-primary-magenta-dark); /* Un poco más oscuro al hacer hover */
+    transform: scale(1.05);
+}
+
+/* --- Estilos para el Modal de FAQ --- */
+
+.faqModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1010; /* Debe estar sobre el botón */
+}
+
+.faqModalContent {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 550px;
+    width: 90%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    position: relative;
+    max-height: 80vh; /* Para que sea scrollable en pantallas pequeñas */
+    overflow-y: auto;
+}
+
+.faqCloseButton {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.faqCloseButton:hover {
+    opacity: 1;
+}
+
+.faqList {
+    margin-top: 20px;
+    text-align: left; /* Alinea el contenido del FAQ a la izquierda */
+}
+
+.faqItem {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.faqItem:last-child {
+    border-bottom: none;
+}
+
+.faqQuestion {
+    color: var(--color-brand-sedecyt);
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.faqAnswer {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
 }
