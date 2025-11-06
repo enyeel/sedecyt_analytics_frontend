@@ -44,10 +44,9 @@
   box-sizing: border-box; /* Asegura que el padding no desborde */
 }
 
-/* ⬇️ CAMBIO REALIZADO AQUÍ (Fondo Degradado) ⬇️ */
 body {
-  /* Degradado de azul claro a azul oscuro/púrpura */
-  background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+  /* Degradado de azul claro a azul angel */
+  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface) 100%);
   
   /* Asegura que el degradado cubra toda la altura de la vista */
   min-height: 100vh;
