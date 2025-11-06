@@ -49,17 +49,17 @@ export default function LoginForm({ onLogin }) {
         },
         {
             q: '¿Quién puede acceder a este sistema?',
-            a: 'El acceso está restringido a personal autorizado de SEDECYT. Si crees que deberías tener acceso, contacta al administrador del sistema.',
+            a: 'El acceso está restringido a personal autorizado de SEDECYT. Si crees que deberías tener acceso, te equivocas.',
         },
         {
             q: '¿Puedo exportar los datos de las gráficas?',
-            a: 'Sí, la plataforma permite descargar los datos y las imágenes de las gráficas en los módulos de Dashboard Home y Detalle.',
+            a: 'Que te importa, pero sí, la plataforma permite descargar los datos y las imágenes de las gráficas '
         },
         {
             q: '¿Tienes una queja?',
             a: 'Lol, que mal.',
         },
-                {
+        {
             q: '¿El fondo esta verde?',
             a: 'RACISTA, MI PROBLEMA NO ES.',
         },
