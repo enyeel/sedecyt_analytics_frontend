@@ -1,4 +1,5 @@
 import './globals.css';
+import AppHeader from './components/AppHeader';
 
 export const metadata = {
   title: 'Sedecyt Analytics',
@@ -18,30 +19,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body>
-        <header className="appHeader">
-          <img src="/logo.png" alt="logo" />
-
-          <div className="headerActions">
-            {/* Cerrar sesión */}
-            <button className="headerButton logoutButton" title="Cerrar sesión">Cerrar sesión</button>
-
-            {/* Ayuda (entre cerrar sesión y búsqueda) */}
-            <button className="helpButton" title="Ayuda" aria-label="Ayuda">?</button>
-
-            {/* Búsqueda por empresa (al lado derecho) */}
-            <form onSubmit={onSearch} style={{ display: 'flex', alignItems: 'center' }}>
-              <div className="searchWrap" role="search">
-                <input
-                  name="companySearch"
-                  type="search"
-                  className="searchInput"
-                  placeholder="Buscar por empresa..."
-                  aria-label="Buscar por empresa"
-                />
-              </div>
-            </form>
-          </div>
-        </header>
+        <AppHeader />
 
         <main className="mainContainer">
           {children}
