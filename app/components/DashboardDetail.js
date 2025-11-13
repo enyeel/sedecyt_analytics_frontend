@@ -1,55 +1,48 @@
 'use client';
 
+import { useState } from 'react';
 import styles from './DashboardDetail.module.css';
-import ChartCard from './ChartCard'; // Importamos el desempacador
+import ChartCard from './ChartCard';
+import Sidebar from './Sidebar';
 
-// Este componente recibe toda la información del "cerebro"
 export default function DashboardDetail({
     selectedDashboard,
     allDashboards,
     onGoHome,
     onDashboardSelect
 }) {
-
-    // Extraemos las gráficas del dashboard seleccionado
-    const charts = selectedDashboard.charts || [];
+    const charts = selectedDashboard?.charts || [];
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
         <div className={styles.detailContainer}>
 
-            {/* --- COLUMNA 1: SIDEBAR --- */}
-            <aside className={styles.sidebar}>
-                <h3 className={styles.sidebarTitle}>Dashboards</h3>
-                <ul className={styles.sidebarList}>
+            {/* Botón flotante para abrir sidebar (arriba-izq, debajo del header) */}
+            <button
+              className={styles.fab}
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Abrir menú"
+            >
+              ☰
+            </button>
 
-                    {/* Botón para volver al Home (Grid) */}
-                    <li className={styles.sidebarItem} onClick={onGoHome}>
-                        ← Ver Resumen (Home)
-                    </li>
+            {/* Sidebar separado */}
+            <Sidebar
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+              allDashboards={allDashboards}
+              selectedDashboard={selectedDashboard}
+              onDashboardSelect={onDashboardSelect}
+              onGoHome={onGoHome}
+            />
 
-                    <hr className={styles.divider} />
-
-                    {/* Mapeamos TODOS los dashboards para la navegación AGREGAR BPTON DE DESCARGAR A CADA UNO*/}
-                    {allDashboards.map(dash => (
-                        <li
-                            key={dash.id}
-                            // Resaltamos el que está activo
-                            className={`${styles.sidebarItem} ${dash.id === selectedDashboard.id ? styles.active : ''}`}
-                            onClick={() => onDashboardSelect(dash)} // Permite cambiar de dashboard
-                        >
-                            {dash.title}
-                        </li>
-                    ))}
-                </ul>
-            </aside>
-
-            {/* --- COLUMNA 2: GRID DE GRÁFICAS --- */}
+            {/* --- GRID DE GRÁFICAS --- */}
             <section className={styles.chartGrid}>
 
                 {/* Si no hay gráficas, mostramos un mensaje */}
                 {charts.length === 0 && (
                     <div className={styles.noChartsMessage}>
-                        <p>Este dashboard (<strong>{selectedDashboard.title}</strong>) aún no tiene gráficas configuradas.</p>
+                        <p>Este dashboard (<strong>{selectedDashboard?.title}</strong>) aún no tiene gráficas configuradas.</p>
                     </div>
                 )}
 

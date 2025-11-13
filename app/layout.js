@@ -1,24 +1,32 @@
-// Importa los estilos globales
-import "./globals.css";
+import './globals.css';
 
 export const metadata = {
-  title: "SEDECYT Analytics",
-  description: "Plataforma de analítica de SEDECYT",
+  title: 'Sedecyt Analytics',
+  description: 'Dashboard'
 };
 
-// El RootLayout ahora es SÚPER simple.
-// Solo define el <html> y <body>
-// 'children' será nuestro 'page.js'
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body>
-        {/* 'page.js' se encargará de todo lo demás,
-            incluyendo el header y el main container
-        */}
-        {children}
+        <header className="appHeader">
+          <img src="/logo.png" alt="logo" />
+
+          <div className="headerActions">
+            <button className="helpButton" title="Ayuda" aria-label="Ayuda">?</button>
+
+            <div className="searchWrap" role="search">
+              <input type="search" className="searchInput" placeholder="Buscar por empresa..." aria-label="Buscar por empresa" />
+            </div>
+
+            <button className="headerButton logoutButton" title="Cerrar sesión">Cerrar sesión</button>
+          </div>
+        </header>
+
+        <main>
+          {children}
+        </main>
       </body>
     </html>
   );
 }
-
