@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import LoginForm from './components/LoginForm';
+import DashboardHome from './components/DashboardHome';
+import DashboardDetail from './components/DashboardDetail';
   
-// --- Componentes que esta página va a mostrar ---
-// ...existing code...
 
 export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
