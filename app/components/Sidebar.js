@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -22,9 +23,7 @@ export default function Sidebar({
         className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}
         aria-hidden={!isOpen}
       >
-        <button className={styles.closeBtn} onClick={onClose} aria-label="Cerrar sidebar">
-          ×
-        </button>
+        {/* BOTÓN "×" ELIMINADO (ahora el toggle controla abrir/cerrar) */}
 
         <h3 className={styles.sidebarTitle}>Dashboards</h3>
         <ul className={styles.sidebarList}>

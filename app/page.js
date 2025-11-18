@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
-import Sidebar from './components/Sidebar';
+
 
 export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
@@ -20,7 +20,6 @@ export default function Page() {
   const [view, setView] = useState('home'); // 'home' o 'dashboard'
   const [selectedDashboard, setSelectedDashboard] = useState(null);
   const [headerTitle, setHeaderTitle] = useState('SEDECYT Analytics');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // --- LÓGICA DEL "PORTERO" ---
   useEffect(() => {
@@ -74,7 +73,7 @@ export default function Page() {
     setSelectedDashboard(fullDashboardData);
     setHeaderTitle(fullDashboardData.title);
     setView('dashboard');
-    setIsSidebarOpen(false); // cerrar sidebar al seleccionar
+    console.log("Mostrando dashboard:", fullDashboardData.id);
   };
 
   const handleGoHome = () => {
@@ -82,7 +81,6 @@ export default function Page() {
     setHeaderTitle('Resumen de Dashboards');
     setView('home');
     console.log("Volviendo a Home");
-    setIsSidebarOpen(false);
   };
 
   // --- LÓGICA DE AUTENTICACIÓN ---
@@ -105,37 +103,19 @@ export default function Page() {
 
   return (
     <>
-      {/* Sidebar (invisible hasta togglear) */}
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-        allDashboards={dashboards}
-        selectedDashboard={selectedDashboard}
-        onDashboardSelect={handleDashboardSelect}
-        onGoHome={handleGoHome}
-      />
-
-      {/* Botón flotante para abrir/cerrar el sidebar, justo abajo del header */}
-      <button
-        className="sidebarToggleBtn"
-        aria-label={isSidebarOpen ? "Cerrar menú" : "Abrir menú"}
-        onClick={() => setIsSidebarOpen(v => !v)}
-      >
-        ☰
-      </button>
-
+      {/* NOTA: El Header ya lo renderiza app/layout.js usando app/components/AppHeader.js */}
       <main className="mainContainer">
         {!session ? (
-          <LoginForm onLogin={(s) => setSession(s)} />
+          <LoginForm onLogin={handleLogin} />
         ) : (
           <>
             {view === 'home' && (
               <DashboardHome
                 dashboards={dashboards}
-                onDashboardSelect={handleDashboardSelect}
+                onDashboardSelect={handleDashboardSelect} 
               />
             )}
-
+            
             {view === 'dashboard' && (
               <DashboardDetail
                 selectedDashboard={selectedDashboard}

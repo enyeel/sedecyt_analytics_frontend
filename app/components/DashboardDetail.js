@@ -1,3 +1,4 @@
+// ...existing code...
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -62,13 +63,13 @@ export default function DashboardDetail({
 
   return (
     <div className={styles.detailContainer}>
-      {/* Botón flotante para abrir sidebar (arriba-izq, debajo del header) */}
+      {/* Botón flotante tipo toggle (ahora alterna abrir/cerrar) */}
       <button
         className={styles.fab}
-        onClick={() => setSidebarOpen(true)}
-        aria-label="Abrir menú"
+        onClick={() => setSidebarOpen(v => !v)}
+        aria-label={sidebarOpen ? "Cerrar menú" : "Abrir menú"}
       >
-        ☰
+        {sidebarOpen ? '×' : '☰'}
       </button>
 
       {/* Sidebar separado */}
@@ -80,7 +81,6 @@ export default function DashboardDetail({
         onDashboardSelect={onDashboardSelect}
         onGoHome={onGoHome}
       />
-
       {/* Si hay una empresa buscada, mostrar panel con estadísticas / relaciones */}
       {companyInfo && (
         <section className={styles.companyPanel} aria-live="polite">
