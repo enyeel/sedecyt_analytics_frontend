@@ -1,16 +1,22 @@
 /* ...existing code... */
 .appHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    height: var(--app-header-height);
+    /* centra el contenido con un max-width para que no ocupe todo el ancho en pantallas grandes */
     display: grid;
     grid-template-columns: 1fr auto 1fr; /* left / center / right */
     align-items: center;
     gap: 1rem;
-    padding: 0.9rem 1rem;
+    padding: 0 1rem;
     background: var(--color-background-nav, #fff);
-    border-bottom: 2px solid rgba(0,0,0,0.08); /* división más fuerte */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    /* división más fuerte (usuario lo pidió) */
+    border-bottom: 2px solid rgba(0,0,0,0.12);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    z-index: 1000;
+    box-sizing: border-box;
 }
 
 .left {
@@ -30,7 +36,7 @@
 
 /* logo */
 .logo {
-    height: 42px;
+    height: calc(var(--app-header-height) - 18px); /* deja algo de padding vertical */
     width: auto;
     object-fit: contain;
 }

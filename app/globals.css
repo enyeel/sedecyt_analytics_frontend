@@ -36,6 +36,7 @@
 
   /* Fuente por defecto (si ya la usas) */
   --font-inter: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --app-header-height: 90px;
 }
 
 /* ============================= */
@@ -56,86 +57,11 @@ body {
   font-family: var(--font-inter);
 }
 
-/* ============================= */
-/* Header Corporativo (Actualizado) */
-/* ============================= */
-.appHeader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 15px 30px;
-  background: var(--color-background-nav);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
-  box-sizing: border-box;
-  border-bottom: 1px solid hsl(220, 25%, 90%);
-  height: 90px;
-}
 
-.appHeader img { height: 60px; width: auto; }
-
-.headerButton {
-  background: var(--color-brand-sedecyt);
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  color: var(--white);
-  font-weight: bold;
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-.headerButton:hover { opacity: 0.8; }
-
-/* Header acciones: ayuda, búsqueda y cerrar sesión */
-.appHeader .headerActions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.searchWrap {
-  background: var(--gray-light);
-  padding: 6px 8px;
-  border-radius: 8px;
-}
-
-.searchInput {
-  border: none;
-  background: transparent;
-  outline: none;
-  width: 260px;
-  font-size: 0.95rem;
-  color: var(--color-text-primary);
-}
-
-.helpButton {
-  background: transparent;
-  border: 1px solid hsl(220,25%,92%);
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.logoutButton {
-  background: var(--magenta-base);
-  color: var(--white);
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* ============================= */
-/* Main container offset (para que el contenido no quede debajo del header) */
-/* ============================= */
 .mainContainer {
-  margin-top: 90px;
-  padding: 2.5rem 2rem;
-  min-height: calc(100vh - 90px);
+  /* padding top compensado por el header fijo */
+  padding: calc(var(--app-header-height) + 1rem) 2rem 2.5rem;
+  min-height: calc(100vh - var(--app-header-height));
   display: flex;
   justify-content: center;
   align-items: center;
