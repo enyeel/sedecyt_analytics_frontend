@@ -1,8 +1,9 @@
+/* ...existing code... */
 .sidebar {
   position: fixed;
-  top: 90px;
+  top: var(--app-header-height);
   left: 0;
-  height: calc(100vh - 90px);
+  height: calc(100vh - var(--app-header-height));
   width: 320px;
   max-width: 85%;
   background: var(--color-background-nav);
@@ -20,7 +21,7 @@
 
 .backdrop {
   position: fixed;
-  inset: 90px 0 0 0;
+  inset: calc(var(--app-header-height)) 0 0 0;
   background: rgba(0,0,0,0);
   transition: background 220ms ease;
   pointer-events: none;
@@ -31,6 +32,34 @@
   background: rgba(0,0,0,0.28);
   pointer-events: auto;
 }
+/* ...existing code... */
+
+/* Botón flotante para abrir/cerrar sidebar */
+.sidebarToggleBtn {
+  position: fixed;
+  top: calc(var(--app-header-height) + 10px); /* justo abajo del header */
+  left: 12px;
+  z-index: 1100;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-brand-sedecyt);
+  color: white;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(16,24,40,0.12);
+  cursor: pointer;
+}
+
+/* pequeña mejora responsive: ocultarlo si la pantalla es muy ancha y hay sidebar siempre visible */
+@media (min-width: 1100px) {
+  .sidebarToggleBtn { display: none; }
+}
+
+
 
 .sidebarTitle { margin: 0 0 0.75rem 0; font-size: 0.95rem; color: var(--color-text-primary); }
 
