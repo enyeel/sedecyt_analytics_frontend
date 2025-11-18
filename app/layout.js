@@ -1,5 +1,4 @@
 import './globals.css';
-import AppHeader from './components/AppHeader';
 
 export const metadata = {
   title: 'Sedecyt Analytics',
@@ -19,7 +18,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body>
-        <AppHeader />
 
         <main className="mainContainer">
           {children}

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
+import AppHeader from './components/AppHeader';
 
 
 export default function Page() {
@@ -86,7 +87,9 @@ export default function Page() {
   // --- LÓGICA DE AUTENTICACIÓN ---
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setSession(null);
   };
+
   
   const handleLogin = (session) => {
     setSession(session);
@@ -103,6 +106,7 @@ export default function Page() {
 
   return (
     <>
+    <AppHeader session={session} onLogout={handleLogout} />
       {/* NOTA: El Header ya lo renderiza app/layout.js usando app/components/AppHeader.js */}
       <main className="mainContainer">
         {!session ? (
