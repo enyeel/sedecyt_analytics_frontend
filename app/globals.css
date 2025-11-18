@@ -43,12 +43,16 @@
 /* ============================= */
 * { box-sizing: border-box; }
 
-html, body, #root { height: 100%; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
 
 body {
   background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface) 100%);
-  min-height: 100vh;
-  margin: 0;
+  background-attachment: fixed; /* 🔥 Mantiene el fondo fijo y sin cortes */
+  background-size: cover;       /* Asegura que cubra toda la pantalla */
   font-family: var(--font-inter);
 }
 
