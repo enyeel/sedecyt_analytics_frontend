@@ -2,52 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import Image from 'next/image';
   
 // --- Componentes que esta página va a mostrar ---
-import LoginForm from '@/app/components/LoginForm';
-import DashboardHome from '@/app/components/DashboardHome';
-import DashboardDetail from '@/app/components/DashboardDetail'; // <-- ¡NUEVO!
+// ...existing code...
 
-// --- Fin de Datos Falsos --- We will fetch this from the backend now ---
-
-// =============================================
-// --- Componente del Header ---
-// =============================================
-function AppHeader({ title, onLogout, session }) {
-  return (
-    <header className="appHeader">
-      {/* Lado Izquierdo: Logo */}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Image
-          src="/logo-sedec.png"
-          alt="Logo SEDECYT"
-          width={180}
-          height={60}
-          priority
-        />
-      </div>
-
-      {/* Centro: Título Dinámico */}
-      <div className="headerTitle">
-        <h2>{title}</h2>
-      </div>
-
-      {/* Lado Derecho: Botones de Utilidad y Logout */}
-      <div className="headerActions">
-        {session && (
-          <button onClick={onLogout} className="headerButton">
-            Cerrar Sesión
-          </button>
-        )}
-      </div>
-    </header>
-  );
-}
-
-// =============================================
-// --- La Página Principal (El "Cerebro") ---
-// =============================================
 export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
   const [session, setSession] = useState(null);
@@ -110,7 +68,6 @@ export default function Page() {
 
   // --- LÓGICA DEL "DIRECTOR" ---
   const handleDashboardSelect = (dashboard) => {
-    // Buscamos el dashboard completo en nuestros datos
     const fullDashboardData = dashboards.find(d => d.id === dashboard.id);
     setSelectedDashboard(fullDashboardData);
     setHeaderTitle(fullDashboardData.title);
@@ -145,19 +102,13 @@ export default function Page() {
 
   return (
     <>
-      <AppHeader
-        title={headerTitle}
-        onLogout={handleLogout}
-        session={session}
-      />
-
+      {/* NOTA: El Header ya lo renderiza app/layout.js usando app/components/AppHeader.js */}
       <main className="mainContainer">
         {!session ? (
           <LoginForm onLogin={handleLogin} />
         ) : (
           <>
             {view === 'home' && (
-              // Le pasamos la lista de dashboards
               <DashboardHome
                 dashboards={dashboards}
                 onDashboardSelect={handleDashboardSelect} 
@@ -165,12 +116,11 @@ export default function Page() {
             )}
             
             {view === 'dashboard' && (
-              // ¡Renderizamos el nuevo componente de Detalle!
               <DashboardDetail
                 selectedDashboard={selectedDashboard}
                 allDashboards={dashboards}
                 onGoHome={handleGoHome}
-                onDashboardSelect={handleDashboardSelect} // Para la sidebar
+                onDashboardSelect={handleDashboardSelect}
               />
             )}
           </>
@@ -180,6 +130,7 @@ export default function Page() {
   );
 }
 
+// ...existing code...
 
 
 // DISEÑO
