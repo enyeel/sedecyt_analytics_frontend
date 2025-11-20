@@ -146,6 +146,7 @@ export default function Page() {
                 {!isDetailLoading && selectedDashboard && (
                   <DashboardDetail
                     selectedDashboard={selectedDashboard}
+                    session={session} // <-- Pasamos la sesión para el token de auth
                     allDashboards={dashboards} // La lista ligera para la sidebar
                     onGoHome={handleGoHome}
                     onDashboardSelect={handleDashboardSelect}
