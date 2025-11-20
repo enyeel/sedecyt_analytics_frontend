@@ -83,3 +83,75 @@
     padding: 0.4rem 0.6rem;
     min-width: 180px;
 }
+
+.helpWrap { position: relative; display: inline-block; }
+
+.helpMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 320px;
+  max-width: 80vw;
+  background: #fff;
+  border: 1px solid hsl(220, 25%, 92%);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+  z-index: 1200;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.helpList { display: flex; flex-direction: column; gap: 6px; padding: 4px 2px; }
+
+.helpItem {
+  text-align: left;
+  padding: 0.55rem 0.6rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+.helpItem:hover { background: hsl(220, 25%, 96%); }
+
+.contactInline {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.contactLink {
+  background: transparent;
+  border: none;
+  color: var(--color-primary-magenta);
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.helpSolution { padding: 0.25rem; }
+.backBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+.helpQ { margin: 0 0 0.25rem 0; font-size: 0.95rem; color: var(--color-text-primary); }
+.helpA { margin: 0 0 0.6rem 0; color: var(--color-text-secondary); }
+
+.contactBox {
+  margin-top: 0.6rem;
+  padding: 0.55rem;
+  border-radius: 8px;
+  background: hsl(220, 25%, 98%);
+  border: 1px solid hsl(220, 25%, 92%);
+  font-size: 0.9rem;
+}
+.contactBox a { color: var(--color-primary-magenta); text-decoration: none; }
