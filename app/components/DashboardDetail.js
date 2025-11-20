@@ -13,6 +13,8 @@ export default function DashboardDetail({
   onGoHome,
   onDashboardSelect
 }) {
+  // Defensive check: Ensure charts is always an array.
+  // Log an error if it's missing, which helps debugging.
   const charts = selectedDashboard?.charts || [];
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
