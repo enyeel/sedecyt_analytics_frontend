@@ -87,6 +87,7 @@ export default function Page() {
       if (!response.ok) throw new Error(`Failed to fetch dashboard details: ${response.status}`);
 
       const fullDashboardData = await response.json();
+      console.log('%c[page.js] 1. Received full dashboard data from API:', 'color: blue; font-weight: bold;', fullDashboardData);
       // 3. Actualizar el estado con los datos completos
       setSelectedDashboard(fullDashboardData);
     } catch (e) {
@@ -143,6 +144,7 @@ export default function Page() {
             {view === 'dashboard' && (
               <>
                 {isDetailLoading && <div className="fullPageLoader">Cargando dashboard...</div>}
+                {console.log('%c[page.js] 2. Passing this to DashboardDetail:', 'color: green; font-weight: bold;', selectedDashboard)}
                 {!isDetailLoading && selectedDashboard && (
                   <DashboardDetail
                     selectedDashboard={selectedDashboard}
