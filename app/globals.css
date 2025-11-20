@@ -61,7 +61,7 @@ body {
 .mainContainer {
   /* padding top compensado por el header fijo */
   min-height: calc(100vh - var(--app-header-height));
-  margin-top: calc(var(--app-header-height) / 2);
+  margin-top: calc(var(--app-header-height));
   display: flex;
   justify-content: center;
   align-items: center;
