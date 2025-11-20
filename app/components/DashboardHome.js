@@ -2,13 +2,15 @@
 import styles from './DashboardHome.module.css';
 
 // Este componente ahora es "tonto".
-// Recibe la lista de 'dashboards' y la función 'onDashboardSelect'
-export default function DashboardHome({ dashboards, onDashboardSelect }) {
+// Recibe la lista de 'dashboards' y la función 'onDashboardSelect'.
+// Se añade un valor por defecto a dashboards para evitar errores si llega como undefined.
+export default function DashboardHome({ dashboards = [], onDashboardSelect }) {
     return (
         <div className={styles.gridContainer}>
 
             {/* Hacemos map sobre los dashboards que recibimos como prop */}
-            {dashboards.map((dashboard) => (
+            {/* Ahora, si dashboards es undefined, usará [] y .map no fallará. */}
+            {dashboards && dashboards.map((dashboard) => (
 
                 <div
                     key={dashboard.id}
@@ -34,4 +36,3 @@ export default function DashboardHome({ dashboards, onDashboardSelect }) {
         </div>
     );
 }
-
