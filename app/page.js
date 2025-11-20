@@ -136,7 +136,7 @@ export default function Page() {
             {view === 'home' && (
               <DashboardHome
                 dashboards={dashboards}
-                onDashboardSelect={handleDashboardSelect} 
+                onDashboardSelect={handleDashboardSelect}
               />
             )}
             

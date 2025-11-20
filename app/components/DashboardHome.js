@@ -13,7 +13,10 @@ export default function DashboardHome({ dashboards, onDashboardSelect }) {
                 <div
                     key={dashboard.id}
                     className={styles.card}
-                    onClick={() => onDashboardSelect(dashboard)}
+                    onClick={() => {
+                        console.log('Card clicked!', dashboard); // <-- Add this log
+                        onDashboardSelect(dashboard);
+                    }}
                 >
                     <img
                         src={dashboard.imageUrl}
