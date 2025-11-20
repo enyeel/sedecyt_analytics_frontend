@@ -1,12 +1,11 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import AppHeader from './components/AppHeader';
 import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
-import AppHeader from './components/AppHeader';
-
+// ...existing code...
 
 export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
@@ -25,23 +24,21 @@ export default function Page() {
 
   // --- LÓGICA DEL "PORTERO" ---
   useEffect(() => {
+    let mounted = true;
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
       setSession(session);
 
       if (session) {
         try {
-          // Fetch dashboards only if the user is logged in
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboards`, {
             headers: {
               'Authorization': `Bearer ${session.access_token}`
             }
           });
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const data = await response.json();
           setDashboards(data);
         } catch (e) {
@@ -51,84 +48,45 @@ export default function Page() {
           setLoading(false);
         }
       } else {
-        // If there's no session, we're not loading dashboard data, so stop loading.
         setLoading(false);
       }
     };
     getSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        if (_event === 'SIGNED_OUT') {
-          setHeaderTitle('Bienvenido a SEDECYT');
-        }
-      }
-    );
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (mounted) setSession(s);
+    });
 
-    return () => subscription?.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe();
+    };
   }, []);
-
-  // --- LÓGICA DEL "DIRECTOR" ---
-  const handleDashboardSelect = async (dashboard) => {
-    // 1. Cambiar a la vista de detalle y mostrar un loader
-    setView('dashboard');
-    setIsDetailLoading(true);
-    setSelectedDashboard(null); // Limpiar dashboard anterior
-    setHeaderTitle(dashboard.title); // Poner título provisionalmente
-    console.log("Fetching details for dashboard:", dashboard.slug);
-
-    try {
-      // 2. Hacer el fetch para obtener los datos completos de ESE dashboard
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboards/${dashboard.slug}`, {
-        headers: { 'Authorization': `Bearer ${session.access_token}` }
-      });
-
-      if (!response.ok) throw new Error(`Failed to fetch dashboard details: ${response.status}`);
-
-      const fullDashboardData = await response.json();
-      // 3. Actualizar el estado con los datos completos
-      setSelectedDashboard(fullDashboardData);
-    } catch (e) {
-      console.error(e);
-      setError("No se pudo cargar el detalle del dashboard.");
-    } finally {
-      setIsDetailLoading(false); // 4. Ocultar el loader
-    }
-  };
-
-  const handleGoHome = () => {
-    setSelectedDashboard(null);
-    setHeaderTitle('Resumen de Dashboards');
-    setView('home');
-    console.log("Volviendo a Home");
-  };
 
   // --- LÓGICA DE AUTENTICACIÓN ---
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
+    try {
+      await supabase.auth.signOut();
+      setSession(null);
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
   };
 
-  
-  const handleLogin = (session) => {
-    setSession(session);
-  };
+  // --- LÓGICA DEL "DIRECTOR" ---
+  const handleDashboardSelect = (dashboard) => { /* ...existing code... */ };
+  const handleGoHome = () => { /* ...existing code... */ };
+  const handleLogin = (session) => setSession(session);
 
   // --- RENDERIZADO ---
-  if (loading) {
-    // Un loader más centrado y visible
-    return <div className="fullPageLoader">Cargando...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
-    <AppHeader session={session} onLogout={handleLogout} />
-      <div className="contentContainer">
+      <AppHeader session={session} onLogout={handleLogout} />
+
+      <main className="mainContainer">
         {!session ? (
           <LoginForm onLogin={handleLogin} />
         ) : (
@@ -139,7 +97,7 @@ export default function Page() {
                 onDashboardSelect={handleDashboardSelect}
               />
             )}
-            
+
             {view === 'dashboard' && (
               <>
                 {isDetailLoading && <div className="fullPageLoader">Cargando dashboard...</div>}
@@ -155,7 +113,15 @@ export default function Page() {
             )}
           </>
         )}
-      </div>
+        </main>
     </>
   );
 }
+
+
+
+// DISEÑO
+// boton DE DESCARGAR CADA DASHBOARD
+// FUNCOIN PARA HACER GRANDE CADA GRAFICA
+// BOTON DESCARGAR CADA GRAFICA
+// TUS PROPIAS IDEAS. LIBERTAD CREATIVA ( TRATA DE NO METER ERRORES :) )
