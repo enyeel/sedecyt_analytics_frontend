@@ -1,12 +1,11 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import AppHeader from './components/AppHeader';
 import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
-import AppHeader from './components/AppHeader';
-
+// ...existing code...
 
 export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
@@ -24,23 +23,21 @@ export default function Page() {
 
   // --- LÓGICA DEL "PORTERO" ---
   useEffect(() => {
+    let mounted = true;
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
       setSession(session);
 
       if (session) {
         try {
-          // Fetch dashboards only if the user is logged in
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboards`, {
             headers: {
               'Authorization': `Bearer ${session.access_token}`
             }
           });
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const data = await response.json();
           setDashboards(data);
         } catch (e) {
@@ -50,64 +47,44 @@ export default function Page() {
           setLoading(false);
         }
       } else {
-        // If there's no session, we're not loading dashboard data, so stop loading.
         setLoading(false);
       }
     };
     getSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        if (_event === 'SIGNED_OUT') {
-          setHeaderTitle('Bienvenido a SEDECYT');
-        }
-      }
-    );
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (mounted) setSession(s);
+    });
 
-    return () => subscription?.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe();
+    };
   }, []);
-
-  // --- LÓGICA DEL "DIRECTOR" ---
-  const handleDashboardSelect = (dashboard) => {
-    const fullDashboardData = dashboards.find(d => d.id === dashboard.id);
-    setSelectedDashboard(fullDashboardData);
-    setHeaderTitle(fullDashboardData.title);
-    setView('dashboard');
-    console.log("Mostrando dashboard:", fullDashboardData.id);
-  };
-
-  const handleGoHome = () => {
-    setSelectedDashboard(null);
-    setHeaderTitle('Resumen de Dashboards');
-    setView('home');
-    console.log("Volviendo a Home");
-  };
 
   // --- LÓGICA DE AUTENTICACIÓN ---
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
+    try {
+      await supabase.auth.signOut();
+      setSession(null);
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
   };
 
-  
-  const handleLogin = (session) => {
-    setSession(session);
-  };
+  // --- LÓGICA DEL "DIRECTOR" ---
+  const handleDashboardSelect = (dashboard) => { /* ...existing code... */ };
+  const handleGoHome = () => { /* ...existing code... */ };
+  const handleLogin = (session) => setSession(session);
 
   // --- RENDERIZADO ---
-  if (loading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
-    <AppHeader session={session} onLogout={handleLogout} />
-      {/* NOTA: El Header ya lo renderiza app/layout.js usando app/components/AppHeader.js */}
+      <AppHeader session={session} onLogout={handleLogout} />
+
       <main className="mainContainer">
         {!session ? (
           <LoginForm onLogin={handleLogin} />
@@ -116,10 +93,10 @@ export default function Page() {
             {view === 'home' && (
               <DashboardHome
                 dashboards={dashboards}
-                onDashboardSelect={handleDashboardSelect} 
+                onDashboardSelect={handleDashboardSelect}
               />
             )}
-            
+
             {view === 'dashboard' && (
               <DashboardDetail
                 selectedDashboard={selectedDashboard}
@@ -135,7 +112,6 @@ export default function Page() {
   );
 }
 
-// ...existing code...
 
 
 // DISEÑO
