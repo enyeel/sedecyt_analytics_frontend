@@ -18,13 +18,11 @@ export default function AppHeader({ session, onLogout }) {
                 <img src="/logo.png" alt="logo" className={styles.logo} />
             </div>
 
-            {session ? (
-              <>
-                <div className={styles.center}>
-                    <button className={styles.helpButton} title="Ayuda" aria-label="Ayuda">?</button>
-                </div>
+            {/* mantenemos el center vacío para no romper el layout */}
+            <div className={styles.center} />
 
-                <div className={styles.right}>
+            {session ? (
+              <div className={styles.right}>
                     <form onSubmit={onSearch} className={styles.searchForm}>
                         <div className={styles.searchWrap} role="search">
                             <input
@@ -37,6 +35,16 @@ export default function AppHeader({ session, onLogout }) {
                         </div>
                     </form>
 
+                    {/* soporte ahora entre búsqueda y logout */}
+                    <button
+                        className={styles.helpButton}
+                        title="Soporte"
+                        aria-label="Soporte"
+                        type="button"
+                    >
+                        ?
+                    </button>
+
                     <button
                         className={`${styles.headerButton} ${styles.logoutButton}`}
                         title="Cerrar sesión"
@@ -44,13 +52,9 @@ export default function AppHeader({ session, onLogout }) {
                     >
                         Cerrar sesión
                     </button>
-                </div>
-              </>
+              </div>
             ) : (
-              <>
-                <div className={styles.center} />
-                <div className={styles.right} />
-             </>
+              <div className={styles.right} />
             )}
         </header>
     );
