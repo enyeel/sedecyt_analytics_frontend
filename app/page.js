@@ -11,7 +11,6 @@ export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isDetailLoading, setIsDetailLoading] = useState(false); // <-- NUEVO: Loader para la vista de detalle
   
   // --- ESTADO DE DATOS ---
   const [dashboards, setDashboards] = useState([]);
@@ -64,6 +63,7 @@ export default function Page() {
   }, []);
 
   // --- LÓGICA DE AUTENTICACIÓN ---
+  const handleLogin = (session) => setSession(session);
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -74,9 +74,21 @@ export default function Page() {
   };
 
   // --- LÓGICA DEL "DIRECTOR" ---
-  const handleDashboardSelect = (dashboard) => { /* ...existing code... */ };
-  const handleGoHome = () => { /* ...existing code... */ };
-  const handleLogin = (session) => setSession(session);
+  const handleDashboardSelect = (dashboard) => { 
+    const fullDashboardData = dashboards.find(d => d.id === dashboard.id);
+    setSelectedDashboard(fullDashboardData);
+    setHeaderTitle(fullDashboardData.title);
+    setView('dashboard');
+    console.log("Mostrando dashboard:", fullDashboardData.id);
+  };
+
+  const handleGoHome = () => {
+    setSelectedDashboard(null);
+    setHeaderTitle('Resumen de Dashboards');
+    setView('home');
+    console.log("Volviendo a Home");
+  };
+  
 
   // --- RENDERIZADO ---
   if (loading) return <div>Cargando...</div>;
@@ -99,27 +111,20 @@ export default function Page() {
             )}
 
             {view === 'dashboard' && (
-              <>
-                {isDetailLoading && <div className="fullPageLoader">Cargando dashboard...</div>}
-                {!isDetailLoading && selectedDashboard && (
-                  <DashboardDetail
-                    selectedDashboard={selectedDashboard}
-                    allDashboards={dashboards} // La lista ligera para la sidebar
-                    onGoHome={handleGoHome}
-                    onDashboardSelect={handleDashboardSelect}
-                  />
-                )}
-              </>
+              <DashboardDetail
+                selectedDashboard={selectedDashboard}
+                allDashboards={dashboards}
+                onGoHome={handleGoHome}
+                onDashboardSelect={handleDashboardSelect}
+              />
             )}
           </>
         )}
-        </main>
+      </main>
     </>
   );
 }
-
-
-
+// ...existing code...
 // DISEÑO
 // boton DE DESCARGAR CADA DASHBOARD
 // FUNCOIN PARA HACER GRANDE CADA GRAFICA
