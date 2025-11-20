@@ -5,7 +5,7 @@ import AppHeader from './components/AppHeader';
 import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
-// ...existing code...
+
 
 export default function Page() {
   // --- ESTADO DEL "PORTERO" (Autenticación) ---
@@ -124,7 +124,7 @@ export default function Page() {
     </>
   );
 }
-// ...existing code...
+
 // DISEÑO
 // boton DE DESCARGAR CADA DASHBOARD
 // FUNCOIN PARA HACER GRANDE CADA GRAFICA
