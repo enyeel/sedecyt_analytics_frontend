@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import styles from './DashboardDetail.module.css';
 import ChartCard from './ChartCard';
 import Sidebar from './Sidebar';
-import testData from '../test-data.json'; // usa tu fuente real si procede
 
 export default function DashboardDetail({
   selectedDashboard,
+  session, // <-- Recibimos la sesión
   allDashboards,
   onGoHome,
   onDashboardSelect
@@ -21,32 +21,40 @@ export default function DashboardDetail({
   const [companyInfo, setCompanyInfo] = useState(null);
 
   useEffect(() => {
-    const handler = (ev) => {
+    const handler = async (ev) => {
       const q = ev?.detail?.query?.trim();
       if (!q) return;
+
       setCompanyQuery(q);
-      // Buscar datos en testData (adaptar a tu estructura real)
-      const companies = testData?.companies || [];
-      const found = companies.find(c => c.name?.toLowerCase() === q.toLowerCase()) || null;
+      setCompanyInfo(null); // Limpiar resultados anteriores
 
-      if (found) {
-        const related = companies
-          .filter(c => c.sector && c.sector === found.sector && c.name !== found.name)
-          .slice(0, 5)
-          .map(c => ({ name: c.name, metric: c.metric || null }));
-
-        setCompanyInfo({
-          name: found.name,
-          sector: found.sector || 'N/A',
-          keyStats: {
-            revenue: found.revenue || '—',
-            employees: found.employees || '—',
-            score: found.score || '—'
-          },
-          top10: (found.rank !== undefined) ? (found.rank <= 10) : (found.score && found.score > 80),
-          related
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/companies/search?q=${encodeURIComponent(q)}`, {
+          headers: { 'Authorization': `Bearer ${session.access_token}` }
         });
-      } else {
+
+        if (!response.ok) {
+          throw new Error('Company not found');
+        }
+
+        const foundCompany = await response.json();
+
+        // Adaptar la data de Supabase al formato que espera el panel
+        setCompanyInfo({
+          name: foundCompany.trade_name || 'N/A',
+          sector: foundCompany.sector || 'N/A',
+          keyStats: {
+            // Estos campos no existen en tu tabla 'companies', usamos placeholders
+            revenue: 'N/D', 
+            employees: foundCompany.employee_count || 'N/D',
+            score: 'N/D'
+          },
+          top10: false, // Lógica a definir
+          related: [] // Lógica a definir
+        });
+
+      } catch (error) {
+        console.warn("Search failed:", error.message);
         setCompanyInfo({
           name: q,
           sector: 'Desconocido',
@@ -59,7 +67,7 @@ export default function DashboardDetail({
 
     window.addEventListener('companySearch', handler);
     return () => window.removeEventListener('companySearch', handler);
-  }, []);
+  }, [session]); // <-- El efecto ahora depende de la sesión
 
   return (
     <div className={styles.detailContainer}>
