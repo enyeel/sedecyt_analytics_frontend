@@ -13,11 +13,11 @@ export default function DashboardDetail({
   onGoHome,
   onDashboardSelect
 }) {
-  console.log('%c[DashboardDetail.js] 3. Received prop selectedDashboard:', 'color: purple; font-weight: bold;', selectedDashboard);
+  // console.log('%c[DashboardDetail.js] 3. Received prop selectedDashboard:', 'color: purple; font-weight: bold;', selectedDashboard);
   // Defensive check: Ensure charts is always an array.
   // Log an error if it's missing, which helps debugging.
   const charts = selectedDashboard?.charts || [];
-  console.log('%c[DashboardDetail.js] 4. Extracted charts array:', 'color: red; font-weight: bold;', charts);
+  // console.log('%c[DashboardDetail.js] 4. Extracted charts array:', 'color: red; font-weight: bold;', charts);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // estado para búsqueda de empresa
