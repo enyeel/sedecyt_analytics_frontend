@@ -1,4 +1,12 @@
 import './globals.css';
+import { Inter } from 'next/font/google';
+
+// 2. Configúrala (subsets 'latin' es lo estándar)
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter', // Esto crea la variable CSS automáticamente
+});
 
 export const metadata = {
   title: 'Sedecyt Analytics',
@@ -17,8 +25,8 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="es">
-      <body>
-
+      {/* 3. Inyecta la clase en el body */}
+      <body className={inter.className}> 
         <main className="mainContainer">
           {children}
         </main>

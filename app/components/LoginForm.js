@@ -67,23 +67,24 @@ export default function LoginForm({ onLogin }) {
 
     return (
         // El contenedor principal del formulario
+        <>
         <div className={styles.loginContainer}>
             <h2 className={styles.title}>Iniciar Sesión</h2>
             <p className={styles.subtitle}>Portal de Analítica SEDECYT</p>
-            
-            {/* Mensaje de error */}
+                
             {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
             <form onSubmit={handleLogin} className={styles.loginForm}>
+                {/* ... inputs y botón de login ... */}
                 <div className={styles.inputGroup}>
                     <label htmlFor="email">Correo Electrónico</label>
                     <input
                         type="email"
                         id="email"
-                        value={email} // Conectado al "estado"
-                        onChange={(e) => setEmail(e.target.value)} // Actualiza el "estado"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
-                        disabled={loading} // Deshabilitado mientras carga
+                        disabled={loading}
                     />
                 </div>
                 <div className={styles.inputGroup}>
@@ -91,42 +92,38 @@ export default function LoginForm({ onLogin }) {
                     <input
                         type="password"
                         id="password"
-                        value={password} // Conectado al "estado"
-                        onChange={(e) => setPassword(e.target.value)} // Actualiza el "estado"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
-                        disabled={loading} // Deshabilitado mientras carga
+                        disabled={loading}
                     />
                 </div>
 
-                {/* Deshabilitamos el botón y cambiamos el texto
-          si está en modo 'loading'.
-        */}
                 <button type="submit" className={styles.btn} disabled={loading}>
                     {loading ? 'Iniciando...' : 'Iniciar Sesión'}
                 </button>
             </form>
             <div className={styles.extraLinks}>
-                {/* Estos links por ahora no hacen nada, pero ahí están */}
                 <a href="#">¿Olvidaste tu contraseña?</a>
             </div>
+        </div>
 
-            {/* ========================================= */}
-            {/* ⬇️ [NUEVO] BOTÓN Y MODAL FAQ ⬇️ */}
-            {/* ========================================= */}
-            <button
-                className={styles.faqButton} 
-                onClick={() => setIsFaqOpen(true)}
-                aria-label="Abrir Preguntas Frecuentes"
-                title="Ayuda y Preguntas Frecuentes"
-            >
-                ❓
-            </button>
+        {/* ========================================= */ }
+        {/* BOTÓN Y MODAL FAQ ⬇️ */ }
+        {/* ========================================= */ }
+        <button
+            className={styles.faqButton}
+            onClick={() => setIsFaqOpen(true)}
+            aria-label="Abrir Preguntas Frecuentes"
+            title="Ayuda y Preguntas Frecuentes"
+        >
+            ❓
+        </button>
 
-            {isFaqOpen && (
+        {isFaqOpen && (
                 <div className={styles.faqModalOverlay} onClick={() => setIsFaqOpen(false)}>
                     <div
                         className={styles.faqModalContent}
-                        // Evita que el clic en el modal cierre el overlay
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <button
@@ -148,8 +145,6 @@ export default function LoginForm({ onLogin }) {
                     </div>
                 </div>
             )}
-            
-        </div>
+        </>
     );
 }
-

@@ -34,8 +34,6 @@
   --blue-black: hsl(210, 73%, 17%);
   --magenta-base: hsl(328, 77%, 55%);
 
-  /* Fuente por defecto (si ya la usas) */
-  --font-inter: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   --app-header-height: 90px;
 }
 

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import styles from './AppHeader.module.css';
 
 export default function AppHeader({ session, onLogout }) {
@@ -46,7 +47,14 @@ export default function AppHeader({ session, onLogout }) {
     return (
         <header className={styles.appHeader}>
             <div className={styles.left}>
-                <img src="/logo.png" alt="logo" className={styles.logo} />
+                <Image 
+                    src="/logo.png" 
+                    alt="SEDECyT Logo" 
+                    className={styles.logo}
+                    width={342} // 3. OBLIGATORIO: Define ancho (el real de tu imagen optimizada)
+                    height={100} // 3. OBLIGATORIO: Define alto (para evitar saltos de layout - CLS)
+                    priority={true} // 4. LA CLAVE: Esto le da máxima prioridad de carga
+                />
             </div>
 
             <div className={styles.center} />
