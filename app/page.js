@@ -39,7 +39,7 @@ export default function Page() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
-        if (_event === 'SIGNED_OUT') setHeaderTitle('Bienvenido a SEDECYT');
+        if (_event === 'SIGNED_OUT') {}
       }
     );
     return () => subscription?.unsubscribe();
@@ -94,7 +94,10 @@ export default function Page() {
     <AppHeader session={session} onLogout={handleLogout} />
       <div className="contentContainer">
         {!session ? (
-          <LoginForm onLogin={handleLogin} />
+          // 👇 AQUÍ ENVOLVEMOS EL LOGIN
+          <div className="fullScreenCenter">
+            <LoginForm onLogin={handleLogin} />
+          </div>
         ) : (
           <>
             {/* Vista Home */}

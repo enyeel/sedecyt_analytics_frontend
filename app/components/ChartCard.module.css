@@ -1,32 +1,45 @@
 .chartCard {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* --- GLASSMORPHISM --- */
+    background: rgba(255, 255, 255, 0.75); /* Blanco al 75% */
+    -webkit-backdrop-filter: blur(12px); /* Soporte Safari */
+    backdrop-filter: blur(12px); /* El efecto de borrosidad detrás */
+    
+    /* Borde sutil para definir el cristal */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+        0 10px 15px -3px rgba(0, 0, 0, 0.05); /* Sombras muy suaves */
+        
+    border-radius: 20px; /* Bordes más redondeados = más moderno */
     padding: 1.5rem;
-    /* Hacemos que la tarjeta ocupe el espacio de grid asignado */
+    
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chartCard:hover {
+    transform: translateY(-3px); /* Pequeña elevación al hover */
+    box-shadow: 
+        0 10px 20px -5px rgba(0, 0, 0, 0.08), 
+        0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.85); /* Se vuelve un poco más sólido */
 }
 
 .chartTitle {
-    text-align: center;
-    color: var(--blue-soft);
+    text-align: left; /* Título a la izquierda es más limpio */
+    color: var(--color-text-primary);
     margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em; /* Kerning moderno */
 }
 
 .chartContainer {
-    /* Esto es clave para que la gráfica sea responsive
-     y no se desborde de su contenedor */
     position: relative;
     width: 100%;
-
-    /* --- ¡AQUÍ ESTÁ EL ARREGLO! --- */
-    /* Usamos aspect-ratio en lugar de altura fija */
-    /* 4 / 3 es bueno para barras y líneas */
-    /* Puedes ajustarlo o hacerlo dinámico si quieres */
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9; /* Un poco más panorámico */
 }
 
 /* La librería chart.js pondrá un <canvas> aquí.

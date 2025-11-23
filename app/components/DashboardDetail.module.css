@@ -1,12 +1,10 @@
 /* Contenedor principal — ahora el sidebar es flotante por lo que el grid ocupa todo el ancho */
 .detailContainer {
-  position: relative;
+  display: flex;
+  flex-direction: column; /* Mobile First: Columna */
   width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  min-height: calc(100vh - 90px);
-  box-sizing: border-box;
-  padding: 0;
+  /* Quitamos max-width para que use toda la pantalla en monitores grandes */
+  /* max-width: 1920px; <--- Opcional: Si no quieres que se estire infinito en pantallas 4k */
 }
 
 /* Botón flotante (arriba izquierda, debajo del header) */
@@ -27,26 +25,31 @@
   z-index: 1100;
   cursor: pointer;
   font-size: 1.05rem;
+  display: flex;
 }
 
 /* Grid de gráficas ocupa todo el ancho; quedará parcialmente tapado por el sidebar cuando esté abierto */
 .chartGrid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1rem;
-  padding: 1.25rem 2rem;
-  box-sizing: border-box;
+  /* MAGIC FIX: Esto asegura que quepan tantas columnas como sea posible */
+  /* Si hay espacio, caben 3. Si reduces, bajan a 2, luego a 1. */
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); 
+  gap: 1.5rem; /* Espacio entre tarjetas */
+  padding: 2rem; /* Aire alrededor */
   align-items: start;
 }
 
 /* Mensaje cuando no hay gráficas */
 .noChartsMessage {
-  padding: 2rem;
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.04);
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
   color: var(--color-text-secondary);
 }
 
@@ -79,4 +82,46 @@
   .chartGrid { padding: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
   .fab { left: 10px; top: calc(90px + 10px); }
   .companyPanel { margin: 0.75rem 1rem; padding: 0.8rem; }
+}
+
+/* ========================================= */
+/* 🖥️ MEDIA QUERY: ESCRITORIO (> 1024px) */
+/* ========================================= */
+@media (min-width: 1024px) {
+  
+  /* 1. Cambiamos la dirección a fila: Sidebar | Contenido */
+  .detailContainer {
+    flex-direction: row;
+    align-items: flex-start; /* Importante para que el sticky funcione */
+  }
+
+  /* 2. El botón flotante ya no tiene sentido en desktop */
+  .fab {
+    display: none;
+  }
+
+  /* 3. Ajustamos el grid para que tome el espacio restante */
+  .chartGrid {
+    flex: 1; /* Ocupa todo el ancho que sobre después del sidebar */
+    width: auto; /* Reseteamos anchos fijos */
+    padding: 1.5rem 2rem; /* Ajustamos padding si es necesario */
+  }
+  
+  /* Ajuste para el panel de empresa (si usas búsqueda) */
+  .companyPanel {
+    margin: 1rem 2rem;
+    width: auto; /* Que se adapte al flex */
+  }
+}
+
+/* --- DESKTOP (> 1024px) --- */
+@media (min-width: 1024px) {
+  .detailContainer {
+    flex-direction: row; /* Pone Sidebar y Grid lado a lado */
+    align-items: flex-start;
+  }
+
+  .chartGrid {
+    flex: 1; /* Toma todo el espacio restante */
+  }
 }

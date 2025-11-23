@@ -34,7 +34,9 @@
   --blue-black: hsl(210, 73%, 17%);
   --magenta-base: hsl(328, 77%, 55%);
 
-  --app-header-height: 90px;
+  --white: #ffffff;
+  --app-header-height: 80px; /* Un poco más compacto y elegante */
+  --font-inter: system-ui, -apple-system, sans-serif; /* Fallback */
 }
 
 /* ============================= */
@@ -48,20 +50,52 @@ html, body, #root {
   margin: 0;
 }
 
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 body {
-  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface) 100%);
-  background-attachment: fixed; /* 🔥 Mantiene el fondo fijo y sin cortes */
-  background-size: cover;       /* Asegura que cubra toda la pantalla */
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
   font-family: var(--font-inter);
+  color: var(--color-text-primary);
+  
+  /* --- FONDO PSICODÉLICO ELEGANTE --- */
+  background-color: #f8f9fc; /* Gris muy pálido de base */
+  
+  /* Gradientes más grandes para que al moverse se note el cambio */
+  background-image: 
+    radial-gradient(circle at 0% 0%, hsla(var(--color-secondary-blue-hsl), 0.15), transparent 50%),
+    radial-gradient(circle at 100% 0%, hsla(var(--color-primary-magenta-hsl), 0.1), transparent 50%),
+    radial-gradient(circle at 100% 100%, hsla(var(--color-accent-lime-hsl), 0.15), transparent 50%),
+    radial-gradient(circle at 0% 100%, hsla(var(--color-brand-sedecyt-hsl), 0.1), transparent 50%);
+    
+  /* 🔥 LA MAGIA: Hacemos el fondo más grande que la pantalla */
+  background-size: 200% 200%;
+  
+  /* 🔥 ACTIVAMOS LA ANIMACIÓN: 20 segundos, infinita, suave */
+  animation: gradientMove 20s ease infinite;
+    
+  background-attachment: fixed; /* Para que el fondo no se mueva al scrollear */
 }
 
 
 .mainContainer {
   /* padding top compensado por el header fijo */
+  display: block; 
+  width: 100%;
   min-height: calc(100vh - var(--app-header-height));
-  margin-top: calc(var(--app-header-height));
+  margin-top: var(--app-header-height);
+  position: relative;
+}
+
+.fullScreenCenter {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: calc(100vh - var(--app-header-height)); /* Restamos el header */
   width: 100%;
 }
