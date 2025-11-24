@@ -1,0 +1,112 @@
+/* --- ANIMACIÓN BASE (SHIMMER) --- */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmerBlock {
+    background: #f6f7f8;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.1) 8%, rgba(255, 255, 255, 0.4) 18%, rgba(255, 255, 255, 0.1) 33%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: 12px;
+}
+
+/* ========================================= */
+/* VARIANT 1: HOME (Imita DashboardHome.module.css) */
+/* ========================================= */
+.homeContainer {
+    display: grid;
+    /* Usamos las mismas reglas que tu grid real */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    padding: 1rem;
+    margin: 0 auto;
+    /* Centrado */
+}
+
+.homeCard {
+    height: 280px;
+    /* Alto aprox de tu tarjeta real */
+    border-radius: 10px;
+    overflow: hidden;
+    /* Glassmorphism fake para que se parezca */
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.homeImagePlaceholder {
+    width: 100%;
+    height: 180px;
+    /* Mismo alto que tu imagen real */
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.homeTextPlaceholder {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========================================= */
+/* VARIANT 2: DETAIL (Imita DashboardDetail.module.css) */
+/* ========================================= */
+/* Limpiamos el contenedor del detalle para que solo sea el Grid */
+.detailGrid {
+    display: grid;
+    /* Copiamos EXACTAMENTE las reglas de tu chartGrid real */
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    padding: 2rem;
+    /* Mismo padding que el chartGrid real */
+    box-sizing: border-box;
+}
+
+/* La tarjeta fantasma */
+.chartSkeleton {
+    aspect-ratio: 16 / 9;
+    /* Misma proporción que ChartCard */
+    border-radius: 20px;
+    /* Mismo borde redondeado */
+
+    /* Estilo Glassmorphism "apagado" */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    position: relative;
+    overflow: hidden;
+}
+
+.chartGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.chartCard {
+    aspect-ratio: 16 / 9;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    /* Glassmorphism base */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* MEDIA QUERY: DESKTOP (Para que el sidebar aparezca) */
+@media (min-width: 1024px) {
+    .detailContainer {
+        flex-direction: row;
+    }
+}

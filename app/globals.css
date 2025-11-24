@@ -63,22 +63,33 @@ body {
   font-family: var(--font-inter);
   color: var(--color-text-primary);
   
-  /* --- FONDO PSICODÉLICO ELEGANTE --- */
+  /* --- FONDO PSICODÉLICO ELEGANTE ANIMADO --- */
   background-color: #f8f9fc; /* Gris muy pálido de base */
   
   /* Gradientes más grandes para que al moverse se note el cambio */
+  /*
   background-image: 
     radial-gradient(circle at 0% 0%, hsla(var(--color-secondary-blue-hsl), 0.15), transparent 50%),
     radial-gradient(circle at 100% 0%, hsla(var(--color-primary-magenta-hsl), 0.1), transparent 50%),
     radial-gradient(circle at 100% 100%, hsla(var(--color-accent-lime-hsl), 0.15), transparent 50%),
     radial-gradient(circle at 0% 100%, hsla(var(--color-brand-sedecyt-hsl), 0.1), transparent 50%);
     
-  /* 🔥 LA MAGIA: Hacemos el fondo más grande que la pantalla */
+  /* 🔥 LA MAGIA: Hacemos el fondo más grande que la pantalla
   background-size: 200% 200%;
   
-  /* 🔥 ACTIVAMOS LA ANIMACIÓN: 20 segundos, infinita, suave */
+  /* 🔥 ACTIVAMOS LA ANIMACIÓN: 20 segundos, infinita, suave
   animation: gradientMove 20s ease infinite;
-    
+  */  
+
+  /* --- FONDO PSICODÉLICO ELEGANTE --- */
+  background-color: #f8f9fc; /* Gris muy pálido de base */
+  
+  /* Burbujas de color generadas con gradientes radiales */
+  background-image: 
+    radial-gradient(circle at 15% 50%, hsla(var(--color-secondary-blue-hsl), 0.15) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, hsla(var(--color-primary-magenta-hsl), 0.10) 0%, transparent 25%),
+    radial-gradient(circle at 50% 80%, hsla(var(--color-accent-lime-hsl), 0.15) 0%, transparent 30%);
+
   background-attachment: fixed; /* Para que el fondo no se mueva al scrollear */
 }
 

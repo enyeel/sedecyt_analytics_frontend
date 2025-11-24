@@ -6,6 +6,7 @@ import styles from './DashboardDetail.module.css';
 import ChartCard from './ChartCard';
 import Sidebar from './Sidebar';
 import useSWR from 'swr';
+import SkeletonLoader from './SkeletonLoader';
 
 // Fetcher local (o podrías exportar el de page.js a un archivo utils.js)
 const fetcher = async ([url, token]) => {
@@ -44,6 +45,10 @@ export default function DashboardDetail({
     }
   );
 
+  if (error) {
+    throw error; 
+  }
+
   // estado para búsqueda de empresa
   const [companyQuery, setCompanyQuery] = useState(null);
   const [companyInfo, setCompanyInfo] = useState(null);
@@ -70,38 +75,35 @@ export default function DashboardDetail({
         onDashboardSelect={onDashboardSelect}
         onGoHome={onGoHome}
       />
+      {/* Contenedor principal de contenido */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
-      <section className={styles.chartGrid}>
-        {/* TÍTULO: Se muestra INMEDIATAMENTE porque viene de 'dashboardSummary' */}
+        {/* TÍTULO Y DESCRIPCIÓN (Siempre visibles, vienen del resumen) */}
         <div style={{ gridColumn: '1 / -1', marginBottom: '1rem' }}>
             <h2 style={{ color: 'var(--blue-black)', margin: 0 }}>{displayDashboard.title}</h2>
             <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>{displayDashboard.description}</p>
         </div>
 
-        {/* ESTADO DE CARGA (SKELETON PROVISIONAL) */}
-        {isLoading && (
-            <div className={styles.noChartsMessage}>
-                Cargando gráficas... 
-                {/* Aquí luego pondremos un Skeleton bonito */}
-            </div>
+        {/* ZONA DE GRÁFICAS (Aquí ocurre el cambio mágico) */}
+        {isLoading ? (
+            /* Si carga, mostramos el Grid Falso */
+            <SkeletonLoader type="detail" count={4} />
+        ) : (
+            /* Si terminó, mostramos el Grid Real */
+            <section className={styles.chartGrid}>
+                
+                {charts.length === 0 && !error && (
+                    <div className={styles.noChartsMessage}>
+                        <p>No hay gráficas disponibles.</p>
+                    </div>
+                )}
+                {charts.map(chart => (
+                    <ChartCard key={chart.chart_id} chart={chart} />
+                ))}
+            </section>
         )}
-
-        {/* ERROR */}
-        {error && <div className={styles.noChartsMessage}>Error al cargar gráficas.</div>}
-
-        {/* MENSAJE VACÍO (Solo si YA cargó y de verdad no hay gráficas) */}
-        {!isLoading && !error && charts.length === 0 && (
-            <div className={styles.noChartsMessage}>
-                <p>Este dashboard aún no tiene gráficas configuradas.</p>
-            </div>
-        )}
-
-        {/* GRÁFICAS (Aparecen cuando fullDashboard llega) */}
-        {charts.map(chart => (
-            <ChartCard key={chart.chart_id} chart={chart} />
-        ))}
-
-      </section>
+      </div>
+      
     </div>
   );
 }

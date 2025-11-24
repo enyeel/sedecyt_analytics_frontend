@@ -1,0 +1,107 @@
+.crashContainer {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Usamos tu fondo animado por defecto del body, pero aseguramos que se vea */
+    background-color: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    /* Encima de todo */
+}
+
+.crashBox {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.crashTitle {
+    color: #d32f2f;
+    /* Rojo alarma suave */
+    margin-top: 0;
+}
+
+.crashMessage {
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.details {
+    text-align: left;
+    background: #f5f5f5; /* O un gris oscuro si estás en dark mode */
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    color: #333; /* Texto oscuro para contraste */
+    cursor: pointer;
+    /* 🔥 EL FIX PARA QUE NO SE SALGA: */
+    overflow-x: hidden; /* Oculta lo que sobra horizontalmente */
+}
+
+.details pre {
+    white-space: pre-wrap;       /* Fuerza a que el texto baje de línea */
+    word-wrap: break-word;       /* Rompe palabras largas si es necesario */
+    overflow-wrap: break-word;   /* Estándar moderno */
+    margin: 0.5rem 0 0 0;
+    font-family: monospace;
+    max-height: 200px;           /* Si es muy largo, que tenga scroll vertical */
+    overflow-y: auto;            /* Scroll vertical */
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.retryBtn {
+    background: var(--color-brand-sedecyt);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.supportBtn {
+    background: white;
+    color: var(--color-text-primary);
+    border: 2px solid #eee;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.emergencyHelp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--color-primary-magenta);
+    color: white;
+    width: 160px;
+    height: 50px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 10px 20px rgba(233, 30, 99, 0.4);
+    cursor: default;
+    /* Es solo visual por ahora en este ejemplo */
+}

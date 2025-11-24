@@ -7,6 +7,7 @@ import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
 import AppHeader from './components/AppHeader';
+import SkeletonLoader from './components/SkeletonLoader';
 
 // 1. Definimos el "fetcher" (el mensajero) fuera del componente
 const fetcher = async ([url, token]) => {
@@ -56,6 +57,7 @@ export default function Page() {
       revalidateOnFocus: false, // No recargar al cambiar de pestaña
       dedupingInterval: 60000,  // Usar caché de RAM por 1 minuto
       keepPreviousData: true,   // Muestra datos anteriores mientras carga los nuevos
+      shouldRetryOnError: false,
     }
   );
 
@@ -83,11 +85,9 @@ export default function Page() {
   
 
   // --- RENDERIZADO ---
-  if (authLoading) return <div className="fullPageLoader">Verificando sesión...</div>;
+  if (authLoading) return <div className="fullScreenCenter"><div className="loaderSpinner"></div></div>;
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (error) { throw error; }
 
   return (
     <>
@@ -100,14 +100,13 @@ export default function Page() {
           </div>
         ) : (
           <>
+            {error && (() => { throw error; })()}
+
             {/* Vista Home */}
             {view === 'home' && (
               <>
-                {/* Aquí manejamos el loading DE LOS DATOS */}
-                {dataLoading && <div className="fullPageLoader">Cargando tableros...</div>}
-                
-                {error && <div>Error al cargar: {error.message}</div>}
-                
+                {/* Si está cargando, mostramos Skeletons */}
+                {dataLoading && <SkeletonLoader type="home" />}
                 {/* Si ya hay datos, mostramos el componente */}
                 {dashboards && (
                   <DashboardHome
