@@ -1,27 +1,7 @@
 'use client';
 
-// 1. Importamos Chart.js y los elementos que necesitamos
 import {
     Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement, // Para Pie/Doughnut
-    PointElement, // Para Line
-    LineElement // Para Line
-} from 'chart.js';
-
-// 2. Importamos los componentes de React
-import { Bar, Pie, Line } from 'react-chartjs-2';
-
-// 3. Importamos nuestros estilos
-import styles from './ChartCard.module.css';
-
-// 4. ¡¡REGISTRAMOS LOS ELEMENTOS!! (Paso crítico)
-ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
@@ -31,105 +11,141 @@ ChartJS.register(
     ArcElement,
     PointElement,
     LineElement
-);
+} from 'chart.js';
+import { Bar, Pie, Line } from 'react-chartjs-2';
+import styles from './ChartCard.module.css';
 
-// =============================================
-// --- ¡NUEVO! Paleta de Colores DINÁMICA ---
-// =============================================
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
-/**
- * Función para LEER una variable CSS desde el :root
- * (Solo funciona en el cliente, por eso usamos 'use client')
- */
+// --- UTILS DE COLORES ---
 function getCssVar(varName) {
-    // Asegurarnos de que estamos en el navegador
     if (typeof window !== 'undefined') {
-        // Leemos el valor de la variable desde el :root y quitamos espacios
         return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
     }
-    return '0, 0%, 0%'; // Fallback (negro)
+    return '0, 0%, 0%';
 }
 
 const CHART_COLORS = {
-    // Colores (con opacidad de 0.6 para 'fill')
     BRAND_SEDECYT_OP: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.6)`,
     PRIMARY_MAGENTA_OP: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.6)`,
     SECONDARY_BLUE_OP: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.6)`,
     ACCENT_LIME_OP: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.6)`,
     ACCENT_YELLOW_OP: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.6)`,
-
-    // Colores Sólidos (para 'border' o 'line')
     BRAND_SEDECYT: `hsl(${getCssVar('--color-brand-sedecyt-hsl')})`,
-    PRIMARY_MAGENTA: `hsl(${getCssVar('--color-primary-magenta-hsl')})`,
-    SECONDARY_BLUE: `hsl(${getCssVar('--color-secondary-blue-hsl')})`,
-    ACCENT_LIME: `hsl(${getCssVar('--color-accent-lime-hsl')})`,
-    ACCENT_YELLOW: `hsl(${getCssVar('--color-accent-yellow-hsl')})`,
+    // ... puedes agregar más variaciones aquí si quieres
 };
-// =============================================
 
-// Este es el "unpacker"
-function ChartRenderer({ type, data, options }) {
-    if (type === 'bar') {
-        return <Bar options={options} data={data} />;
+// Función auxiliar para truncar texto largo (ej: "Empresa Manufacturera..." )
+const truncateLabel = (label, maxLength = 15) => {
+    if (label.length > maxLength) {
+        return label.substring(0, maxLength) + '...';
     }
-    if (type === 'pie') {
-        return <Pie options={options} data={data} />;
-    }
-    if (type === 'line') {
-        return <Line options={options} data={data} />;
-    }
-    return <p>Tipo de gráfica no soportado: {type}</p>;
-}
+    return label;
+};
 
-
-// Componente principal de la "Tarjeta"
-export default function ChartCard({ chart }) {
-
-    // --- ¡AQUÍ ESTÁ LA MAGIA PARA Y***! ---
-    // Asignamos los colores directamente usando la paleta
-    const chartData = {
-        ...chart.data,
-        datasets: chart.data.datasets.map(dataset => {
-            // Usamos los colores de la paleta
-            if (chart.type === 'bar') {
-                return {
-                    ...dataset,
-                    backgroundColor: CHART_COLORS.SECONDARY_BLUE_OP,
-                };
-            }
-            if (chart.type === 'pie') {
-                return {
-                    ...dataset,
-                    backgroundColor: [
-                        CHART_COLORS.PRIMARY_MAGENTA_OP,
-                        CHART_COLORS.ACCENT_LIME_OP,
-                        CHART_COLORS.SECONDARY_BLUE_OP,
-                        CHART_COLORS.ACCENT_YELLOW_OP,
-                    ],
-                    borderColor: 'hsl(0, 0%, 100%)', // Borde blanco
-                    borderWidth: 2,
-                };
-            }
-            if (chart.type === 'line') {
-                return {
-                    ...dataset,
-                    borderColor: CHART_COLORS.BRAND_SEDECYT,
-                    backgroundColor: CHART_COLORS.BRAND_SEDECYT_OP, // Relleno
-                    fill: true, // ¡Que rellene el área bajo la línea!
-                };
-            }
-            return dataset;
-        })
-    };
-
-    const options = {
+// --- LOGICA DE INTELIGENCIA VISUAL ---
+function getSmartOptions(type, data) {
+    const baseOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: {
-                position: 'top',
-            },
+            legend: { position: 'top' },
+            tooltip: {
+                // ¡Truco Pro! En el tooltip mostramos el nombre COMPLETO, aunque abajo esté cortado
+                callbacks: {
+                    title: (context) => context[0].label 
+                }
+            }
         },
+    };
+
+    // Lógica específica para BARRAS
+    if (type === 'bar') {
+        const labels = data.labels || [];
+        const labelCount = labels.length;
+        
+        // Calculamos longitud promedio de los textos
+        const avgLabelLength = labels.reduce((acc, label) => acc + label.length, 0) / (labelCount || 1);
+
+        // DECISIÓN AUTOMÁTICA:
+        // Si hay muchas barras (>8) O los textos son largos (>12 caracteres promedio)
+        // -> Cambiamos a Horizontal.
+        const isHorizontal = labelCount > 8 || avgLabelLength > 12;
+
+        return {
+            ...baseOptions,
+            indexAxis: isHorizontal ? 'y' : 'x', // 'y' hace la barra horizontal
+            scales: {
+                x: {
+                    // Si es horizontal, el eje X son números, no etiquetas.
+                    ticks: { 
+                        font: { size: 11 } 
+                    } 
+                },
+                y: {
+                    ticks: {
+                        font: { size: 11 },
+                        // Si es horizontal, truncamos las etiquetas del eje Y para que no ocupen media pantalla
+                        callback: function(value, index) {
+                            // Chart.js a veces pasa el valor del índice, recuperamos el label real
+                            const label = this.getLabelForValue(value); 
+                            return isHorizontal ? truncateLabel(label, 20) : label;
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    return baseOptions;
+}
+
+// El Renderizador
+function ChartRenderer({ type, data, options }) {
+    if (type === 'bar') return <Bar options={options} data={data} />;
+    if (type === 'pie') return <Pie options={options} data={data} />;
+    if (type === 'line') return <Line options={options} data={data} />;
+    return <p>Gráfica no soportada</p>;
+}
+
+export default function ChartCard({ chart }) {
+    // 1. Generamos las opciones inteligentes basadas en los datos
+    const smartOptions = getSmartOptions(chart.type, chart.data);
+
+    // 2. Asignación de colores (igual que antes, pero un poco más limpia)
+    const chartData = {
+        ...chart.data,
+        datasets: chart.data.datasets.map((dataset, index) => {
+            // Lógica de colores
+            let bgColor = CHART_COLORS.SECONDARY_BLUE_OP;
+            let borderColor = 'transparent';
+
+            if (chart.type === 'pie') {
+                // Ciclar colores si hay muchos gajos
+                const palette = [
+                    CHART_COLORS.PRIMARY_MAGENTA_OP,
+                    CHART_COLORS.ACCENT_LIME_OP,
+                    CHART_COLORS.SECONDARY_BLUE_OP,
+                    CHART_COLORS.ACCENT_YELLOW_OP,
+                    CHART_COLORS.BRAND_SEDECYT_OP
+                ];
+                bgColor = chart.data.labels.map((_, i) => palette[i % palette.length]);
+                borderColor = '#ffffff';
+            } else if (chart.type === 'line') {
+                bgColor = CHART_COLORS.BRAND_SEDECYT_OP;
+                borderColor = CHART_COLORS.BRAND_SEDECYT;
+            }
+
+            return {
+                ...dataset,
+                backgroundColor: bgColor,
+                borderColor: borderColor,
+                borderWidth: chart.type === 'pie' ? 2 : 0,
+                fill: chart.type === 'line',
+                // Pequeño radio en las barras para verse moderno
+                borderRadius: chart.type === 'bar' ? 4 : 0, 
+            };
+        })
     };
 
     return (
@@ -138,8 +154,8 @@ export default function ChartCard({ chart }) {
             <div className={styles.chartContainer}>
                 <ChartRenderer
                     type={chart.type}
-                    data={chartData} // Usamos los nuevos datos con colores
-                    options={options} // Usamos las nuevas opciones
+                    data={chartData}
+                    options={smartOptions} 
                 />
             </div>
         </div>
