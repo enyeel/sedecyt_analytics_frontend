@@ -26,11 +26,17 @@ function getCssVar(varName) {
 }
 
 const CHART_COLORS = {
-    BRAND_SEDECYT_OP: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.6)`,
-    PRIMARY_MAGENTA_OP: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.6)`,
-    SECONDARY_BLUE_OP: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.6)`,
-    ACCENT_LIME_OP: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.6)`,
-    ACCENT_YELLOW_OP: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.6)`,
+    BRAND_SEDECYT: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.9)`,
+    PRIMARY_MAGENTA: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.9)`,
+    SECONDARY_BLUE: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.9)`,
+    ACCENT_LIME: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.9)`,
+    ACCENT_YELLOW: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.9)`,
+
+    BRAND_SEDECYT_OP: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.5)`,
+    PRIMARY_MAGENTA_OP: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.5)`,
+    SECONDARY_BLUE_OP: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.5)`,
+    ACCENT_LIME_OP: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.5)`,
+    ACCENT_YELLOW_OP: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.5)`,
     BRAND_SEDECYT: `hsl(${getCssVar('--color-brand-sedecyt-hsl')})`,
     // ... puedes agregar más variaciones aquí si quieres
 };
@@ -48,10 +54,28 @@ function getSmartOptions(type, data) {
     const baseOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        
+        // 1. INTERACCIÓN AVANZADA ("Modo Comparativo")
+        // Esto permite ver todos los datos de un mismo punto (eje X) simultáneamente
+        interaction: {
+            mode: 'index', 
+            intersect: false,
+        },
+
         plugins: {
             legend: { position: 'top' },
             tooltip: {
-                // ¡Truco Pro! En el tooltip mostramos el nombre COMPLETO, aunque abajo esté cortado
+                // 2. ESTILO "BI PROFESIONAL" (Tipo Tableau/PowerBI)
+                backgroundColor: 'rgba(255, 255, 255, 0.95)', // Fondo casi blanco y limpio
+                titleColor: '#003366', // Título en azul institucional
+                bodyColor: '#333',     // Texto oscuro para contraste
+                borderColor: 'rgba(0,0,0,0.1)', // Borde sutil
+                borderWidth: 1,
+                padding: 10,
+                boxPadding: 4,
+                usePointStyle: true,   // Usa puntos redondos en el tooltip (más elegante)
+
+                // Tu lógica original para nombres completos
                 callbacks: {
                     title: (context) => context[0].label 
                 }
@@ -59,7 +83,7 @@ function getSmartOptions(type, data) {
         },
     };
 
-    // Lógica específica para BARRAS
+    // Lógica específica para BARRAS (Tu código original intacto)
     if (type === 'bar') {
         const labels = data.labels || [];
         const labelCount = labels.length;
@@ -68,8 +92,6 @@ function getSmartOptions(type, data) {
         const avgLabelLength = labels.reduce((acc, label) => acc + label.length, 0) / (labelCount || 1);
 
         // DECISIÓN AUTOMÁTICA:
-        // Si hay muchas barras (>8) O los textos son largos (>12 caracteres promedio)
-        // -> Cambiamos a Horizontal.
         const isHorizontal = labelCount > 8 || avgLabelLength > 12;
 
         return {
@@ -77,7 +99,7 @@ function getSmartOptions(type, data) {
             indexAxis: isHorizontal ? 'y' : 'x', // 'y' hace la barra horizontal
             scales: {
                 x: {
-                    // Si es horizontal, el eje X son números, no etiquetas.
+                    // Si es horizontal, el eje X son números.
                     ticks: { 
                         font: { size: 11 } 
                     } 
@@ -85,11 +107,14 @@ function getSmartOptions(type, data) {
                 y: {
                     ticks: {
                         font: { size: 11 },
-                        // Si es horizontal, truncamos las etiquetas del eje Y para que no ocupen media pantalla
+                        // Si es horizontal, truncamos las etiquetas del eje Y
                         callback: function(value, index) {
                             // Chart.js a veces pasa el valor del índice, recuperamos el label real
                             const label = this.getLabelForValue(value); 
-                            return isHorizontal ? truncateLabel(label, 20) : label;
+                            // Asegúrate de tener la función 'truncateLabel' definida fuera o impórtala
+                            return isHorizontal && typeof truncateLabel === 'function' 
+                                ? truncateLabel(label, 20) 
+                                : label;
                         }
                     }
                 }
@@ -115,27 +140,67 @@ export default function ChartCard({ chart }) {
     // 2. Asignación de colores (igual que antes, pero un poco más limpia)
     const chartData = {
         ...chart.data,
-        datasets: chart.data.datasets.map((dataset, index) => {
-            // Lógica de colores
-            let bgColor = CHART_COLORS.SECONDARY_BLUE_OP;
-            let borderColor = 'transparent';
+        datasets: chart.data.datasets.map(dataset => {
+            
+            // CASO 1: GRÁFICA DE BARRAS
+            if (chart.type === 'bar') {
+                return {
+                    ...dataset,
+                    // Estado Normal: Color con opacidad (0.6)
+                    backgroundColor: CHART_COLORS.SECONDARY_BLUE_OP, 
+                    borderColor: 'transparent',
+                    borderWidth: 0,
+                    borderRadius: 6,
 
-            if (chart.type === 'pie') {
-                // Ciclar colores si hay muchos gajos
-                const palette = [
-                    CHART_COLORS.PRIMARY_MAGENTA_OP,
-                    CHART_COLORS.ACCENT_LIME_OP,
-                    CHART_COLORS.SECONDARY_BLUE_OP,
-                    CHART_COLORS.ACCENT_YELLOW_OP,
-                    CHART_COLORS.BRAND_SEDECYT_OP
-                ];
-                bgColor = chart.data.labels.map((_, i) => palette[i % palette.length]);
-                borderColor = '#ffffff';
-            } else if (chart.type === 'line') {
-                bgColor = CHART_COLORS.BRAND_SEDECYT_OP;
-                borderColor = CHART_COLORS.BRAND_SEDECYT;
+                    // Estado HOVER (¡Aquí está la magia!)
+                    hoverBackgroundColor: CHART_COLORS.SECONDARY_BLUE, // Se vuelve sólido (brilla más)
+                    hoverBorderColor: CHART_COLORS.BRAND_SEDECYT, // Le sale un borde azul oscuro
+                    hoverBorderWidth: 2, // Grosor del borde al pasar el mouse
+                };
             }
 
+            // CASO 2: GRÁFICA DE PASTEL
+            if (chart.type === 'pie') {
+                return {
+                    ...dataset,
+                    backgroundColor: [
+                        CHART_COLORS.PRIMARY_MAGENTA_OP,
+                        CHART_COLORS.ACCENT_LIME_OP,
+                        CHART_COLORS.SECONDARY_BLUE_OP,
+                        CHART_COLORS.ACCENT_YELLOW_OP,
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+
+                    // Estado HOVER
+                    // Hacemos que los colores se vuelvan sólidos al pasar el mouse
+                    hoverBackgroundColor: [
+                        CHART_COLORS.PRIMARY_MAGENTA,
+                        CHART_COLORS.ACCENT_LIME,
+                        CHART_COLORS.SECONDARY_BLUE,
+                        CHART_COLORS.ACCENT_YELLOW,
+                    ],
+                    hoverBorderColor: '#ffffff',
+                    hoverBorderWidth: 4, // El borde blanco crece
+                    hoverOffset: 20 // <--- ESTO ES CLAVE: La rebanada "salta" hacia afuera 20px
+                };
+            }
+
+            // CASO 3: LÍNEAS (Ya lo tenías bien, pero le damos un toque extra en los puntos)
+            if (chart.type === 'line') {
+                return {
+                    ...dataset,
+                    borderColor: CHART_COLORS.BRAND_SEDECYT,
+                    backgroundColor: CHART_COLORS.BRAND_SEDECYT_OP,
+                    fill: true,
+                    // Hacemos que el punto se agrande al pasar el mouse
+                    pointHoverRadius: 8, 
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: CHART_COLORS.BRAND_SEDECYT,
+                    pointHoverBorderWidth: 3,
+                };
+            }
+            
             return {
                 ...dataset,
                 backgroundColor: bgColor,

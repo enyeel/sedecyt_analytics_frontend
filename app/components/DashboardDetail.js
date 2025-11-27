@@ -79,7 +79,7 @@ export default function DashboardDetail({
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* TÍTULO Y DESCRIPCIÓN (Siempre visibles, vienen del resumen) */}
-        <div style={{ gridColumn: '1 / -1', marginBottom: '1rem' }}>
+        <div style={{ gridColumn: '1 / -1', marginBottom: '1rem', padding: '2rem 2rem 0 2rem' }}>
             <h2 style={{ color: 'var(--blue-black)', margin: 0 }}>{displayDashboard.title}</h2>
             <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>{displayDashboard.description}</p>
         </div>

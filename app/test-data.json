@@ -3,49 +3,70 @@
     "charts": [
         {
             "chart_id": "chart-001",
-            "title": "Empresas por Rubro",
+            "title": "Empresas por Rubro (Top 4)",
             "type": "bar",
             "data": {
                 "labels": [
                     "Automotriz",
-                    "Aeroespacial",
-                    "Alimentos",
-                    "Textil"
+                    "Metalmecánica",
+                    "Agroindustrial",
+                    "Textil & Confección"
                 ],
                 "datasets": [
                     {
-                        "label": "Número de Empresas",
+                        "label": "Empresas Registradas",
                         "data": [
-                            120,
-                            65,
-                            80,
-                            40
+                            145,
+                            98,
+                            76,
+                            42
                         ],
-                        "backgroundColor": "rgba(54, 162, 235, 0.6)"
+                        "backgroundColor": "rgba(54, 162, 235, 0.8)" 
                     }
                 ]
             }
         },
         {
             "chart_id": "chart-002",
-            "title": "Planes de Expansión",
+            "title": "Estatus de Certificaciones ISO",
             "type": "pie",
             "data": {
                 "labels": [
-                    "Con Planes",
-                    "Sin Planes"
+                    "Certificadas (ISO 9001/IATF)",
+                    "En Proceso de Certificación",
+                    "Sin Certificación"
                 ],
                 "datasets": [
                     {
-                        "label": "Planes de Expansión",
+                        "label": "Distribución",
                         "data": [
                             85,
-                            175
+                            45,
+                            110
                         ],
                         "backgroundColor": [
-                            "rgba(75, 192, 192, 0.6)",
-                            "rgba(255, 99, 132, 0.6)"
+                            "rgba(75, 192, 192, 0.8)",
+                            "rgba(255, 206, 86, 0.8)",
+                            "rgba(255, 99, 132, 0.8)"
                         ]
+                    }
+                ]
+            }
+        },
+        {
+            "chart_id": "chart-003",
+            "title": "Generación de Empleos (Último Semestre)",
+            "type": "line",
+            "data": {
+                "labels": ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
+                "datasets": [
+                    {
+                        "label": "Nuevos Empleos Directos",
+                        "data": [120, 145, 180, 160, 210, 245],
+                        "borderColor": "rgba(153, 102, 255, 1)",
+                        "backgroundColor": "rgba(153, 102, 255, 0.2)",
+                        "tension": 0.3,
+                        "fill": true
                     }
                 ]
             }

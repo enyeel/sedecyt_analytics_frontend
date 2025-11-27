@@ -60,7 +60,8 @@ export default function AppHeader({ session, onLogout }) {
             <div className={styles.center} />
 
             {session ? (
-              <div className={styles.right}>
+                <div className={styles.right}>
+                {/* --- COMENADO TEMPORALMENTE
                     <form onSubmit={onSearch} className={styles.searchForm}>
                         <div className={styles.searchWrap} role="search">
                             <input
@@ -72,6 +73,7 @@ export default function AppHeader({ session, onLogout }) {
                             />
                         </div>
                     </form>
+                */}
 
                     {/* soporte ahora dentro del bloque derecho con menú */}
                     <div className={styles.helpWrap}>
