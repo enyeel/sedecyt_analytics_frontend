@@ -9,6 +9,12 @@
   --color-secondary-blue-hsl: 197, 76%, 57%;
   --color-accent-lime-hsl: 67, 100%, 42%;
   --color-accent-yellow-hsl: 48, 100%, 50%;
+  /* Valores base versión light para para ChartCard.js */
+  --color-brand-sedecyt-hsl-light: 207, 100%, 66%;
+  --color-primary-magenta-hsl-light: 328, 77%, 95%;
+  --color-secondary-blue-hsl-light: 197, 76%, 97%;
+  --color-accent-lime-hsl-light: 67, 100%, 92%;
+  --color-accent-yellow-hsl-light: 48, 100%, 90%;
 
   /* --- Color de Fondo (Neutrales) --- */
   --color-background: hsl(220, 50%, 98%);

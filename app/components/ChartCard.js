@@ -26,17 +26,26 @@ function getCssVar(varName) {
 }
 
 const CHART_COLORS = {
+    // Colores sólidos y con opacidad para diferentes estados
     BRAND_SEDECYT: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.9)`,
     PRIMARY_MAGENTA: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.9)`,
     SECONDARY_BLUE: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.9)`,
     ACCENT_LIME: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.9)`,
     ACCENT_YELLOW: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.9)`,
 
-    BRAND_SEDECYT_OP: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.5)`,
-    PRIMARY_MAGENTA_OP: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.5)`,
-    SECONDARY_BLUE_OP: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.5)`,
-    ACCENT_LIME_OP: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.5)`,
-    ACCENT_YELLOW_OP: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.5)`,
+    // Colores sólidos versión light
+    BRAND_SEDECYT_LIGHT: `hsla(${getCssVar('--color-brand-sedecyt-hsl-light')}, 0.9)`,
+    PRIMARY_MAGENTA_LIGHT: `hsla(${getCssVar('--color-primary-magenta-hsl-light')}, 0.9)`,
+    SECONDARY_BLUE_LIGHT: `hsla(${getCssVar('--color-secondary-blue-hsl-light')}, 0.9)`,
+    ACCENT_LIME_LIGHT: `hsla(${getCssVar('--color-accent-lime-hsl-light')}, 0.9)`,
+    ACCENT_YELLOW_LIGHT: `hsla(${getCssVar('--color-accent-yellow-hsl-light')}, 0.9)`,
+
+    // Colores con opacidad (40%) para estado normal
+    BRAND_SEDECYT_OP: `hsla(${getCssVar('--color-brand-sedecyt-hsl')}, 0.4)`,
+    PRIMARY_MAGENTA_OP: `hsla(${getCssVar('--color-primary-magenta-hsl')}, 0.4)`,
+    SECONDARY_BLUE_OP: `hsla(${getCssVar('--color-secondary-blue-hsl')}, 0.4)`,
+    ACCENT_LIME_OP: `hsla(${getCssVar('--color-accent-lime-hsl')}, 0.4)`,
+    ACCENT_YELLOW_OP: `hsla(${getCssVar('--color-accent-yellow-hsl')}, 0.4)`,
     BRAND_SEDECYT: `hsl(${getCssVar('--color-brand-sedecyt-hsl')})`,
     // ... puedes agregar más variaciones aquí si quieres
 };
@@ -146,16 +155,15 @@ export default function ChartCard({ chart }) {
             if (chart.type === 'bar') {
                 return {
                     ...dataset,
-                    // Estado Normal: Color con opacidad (0.6)
-                    backgroundColor: CHART_COLORS.SECONDARY_BLUE_OP, 
-                    borderColor: 'transparent',
-                    borderWidth: 0,
+                    // Estado Normal: Color version ligth con opacidad
+                    backgroundColor: CHART_COLORS.SECONDARY_BLUE_LIGHT, 
+                    borderColor: CHART_COLORS.SECONDARY_BLUE,
                     borderRadius: 6,
+                    borderWidth: 2,
 
                     // Estado HOVER (¡Aquí está la magia!)
                     hoverBackgroundColor: CHART_COLORS.SECONDARY_BLUE, // Se vuelve sólido (brilla más)
                     hoverBorderColor: CHART_COLORS.BRAND_SEDECYT, // Le sale un borde azul oscuro
-                    hoverBorderWidth: 2, // Grosor del borde al pasar el mouse
                 };
             }
 
@@ -164,12 +172,17 @@ export default function ChartCard({ chart }) {
                 return {
                     ...dataset,
                     backgroundColor: [
-                        CHART_COLORS.PRIMARY_MAGENTA_OP,
-                        CHART_COLORS.ACCENT_LIME_OP,
-                        CHART_COLORS.SECONDARY_BLUE_OP,
-                        CHART_COLORS.ACCENT_YELLOW_OP,
+                        CHART_COLORS.PRIMARY_MAGENTA_LIGHT,
+                        CHART_COLORS.ACCENT_LIME_LIGHT,
+                        CHART_COLORS.SECONDARY_BLUE_LIGHT,
+                        CHART_COLORS.ACCENT_YELLOW_LIGHT,
                     ],
-                    borderColor: '#ffffff',
+                    borderColor: [
+                        CHART_COLORS.PRIMARY_MAGENTA,
+                        CHART_COLORS.ACCENT_LIME,
+                        CHART_COLORS.SECONDARY_BLUE,
+                        CHART_COLORS.ACCENT_YELLOW,
+                    ],
                     borderWidth: 2,
 
                     // Estado HOVER
@@ -180,8 +193,13 @@ export default function ChartCard({ chart }) {
                         CHART_COLORS.SECONDARY_BLUE,
                         CHART_COLORS.ACCENT_YELLOW,
                     ],
-                    hoverBorderColor: '#ffffff',
-                    hoverBorderWidth: 4, // El borde blanco crece
+                    hoverBorderColor: [
+                        CHART_COLORS.PRIMARY_MAGENTA,
+                        CHART_COLORS.ACCENT_LIME,
+                        CHART_COLORS.SECONDARY_BLUE,
+                        CHART_COLORS.ACCENT_YELLOW,
+                    ],
+                    hoverBorderWidth: 4, // El borde crece
                     hoverOffset: 20 // <--- ESTO ES CLAVE: La rebanada "salta" hacia afuera 20px
                 };
             }

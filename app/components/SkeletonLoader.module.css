@@ -21,42 +21,77 @@
 /* VARIANT 1: HOME (Imita DashboardHome.module.css) */
 /* ========================================= */
 .homeContainer {
-    display: grid;
-    /* Usamos las mismas reglas que tu grid real */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    width: 100%;
-    max-width: 1400px;
-    padding: 1rem;
-    margin: 0 auto;
-    /* Centrado */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 340px)); /* Mismo grid */
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  justify-content: center;
 }
 
 .homeCard {
-    height: 280px;
-    /* Alto aprox de tu tarjeta real */
-    border-radius: 10px;
-    overflow: hidden;
-    /* Glassmorphism fake para que se parezca */
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    flex-direction: column;
+  height: 240px; /* Altura aprox */
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.homeImagePlaceholder {
-    width: 100%;
-    height: 180px;
-    /* Mismo alto que tu imagen real */
-    background: rgba(255, 255, 255, 0.1);
+/* Icono Falso */
+.iconSkeleton {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.5);
+  margin-bottom: 1rem;
 }
 
-.homeTextPlaceholder {
-    padding: 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* Contenedor del Home (Centrado Flex Column) */
+.homeWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrado igual que el real */
+}
+
+/* Header Falso del Home */
+.homeHeaderSkeleton {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem; /* Mismo margen que .headerSection real */
+}
+
+.titleSkeleton {
+  width: 400px; /* Ancho aprox del título */
+  height: 40px; /* Alto de la fuente h1 */
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: rgba(0,0,0,0.05); /* Gris muy tenue */
+}
+
+.subtitleSkeleton {
+  width: 300px;
+  height: 20px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.03);
+}
+
+/* El Grid del Home (ya lo tienes, solo verifica márgenes) */
+.homeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
+  gap: 1.5rem;
+  width: 100%;
+  justify-content: center;
 }
 
 /* ========================================= */
@@ -64,44 +99,47 @@
 /* ========================================= */
 /* Limpiamos el contenedor del detalle para que solo sea el Grid */
 .detailGrid {
-    display: grid;
-    /* Copiamos EXACTAMENTE las reglas de tu chartGrid real */
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-    padding: 2rem;
-    /* Mismo padding que el chartGrid real */
-    box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); 
+  gap: 1.5rem;
+  width: 100%;
+  padding: 2rem; 
+  box-sizing: border-box;
 }
 
-/* La tarjeta fantasma */
+/* La tarjeta fantasma (Ahora más visible) */
 .chartSkeleton {
-    aspect-ratio: 16 / 9;
-    /* Misma proporción que ChartCard */
-    border-radius: 20px;
-    /* Mismo borde redondeado */
-
-    /* Estilo Glassmorphism "apagado" */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-
-    position: relative;
-    overflow: hidden;
+  aspect-ratio: 16 / 9; 
+  border-radius: 20px;
+  
+  /* 🔥 CAMBIO CLAVE: Más opacidad para que contraste con el fondo pastel */
+  background: rgba(255, 255, 255, 0.6); 
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.chartGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
+/* Simulamos el Título de la gráfica */
+.chartTitlePlaceholder {
+  height: 24px;
+  width: 60%; /* Título de largo medio */
+  background: rgba(0, 0, 0, 0.06); /* Gris oscurito suave */
+  border-radius: 6px;
+  margin-bottom: 1.5rem; /* Separación igual que el real */
 }
 
-.chartCard {
-    aspect-ratio: 16 / 9;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.4);
-    /* Glassmorphism base */
-    border: 1px solid rgba(255, 255, 255, 0.3);
+/* Simulamos el área del Canvas (Barras/Pie) */
+.chartCanvasPlaceholder {
+  flex: 1; /* Ocupa el resto del espacio */
+  width: 100%;
+  background: rgba(0, 0, 0, 0.03); /* Un fondo muy sutil para el área de dibujo */
+  border-radius: 12px;
+  
+  /* Opcional: Un borde inferior para simular el eje X */
+  border-bottom: 2px solid rgba(0,0,0,0.05);
 }
 
 /* MEDIA QUERY: DESKTOP (Para que el sidebar aparezca) */
