@@ -10,11 +10,26 @@ import AppHeader from './components/AppHeader';
 import SkeletonLoader from './components/SkeletonLoader';
 
 // 1. Definimos el "fetcher" (el mensajero) fuera del componente
-const fetcher = async ([url, token]) => {
+const fetcher = async ([url]) => { // Ya no recibimos el token en los argumentos
+  
+  // 1. Pedir sesión ACTUAL a Supabase antes de cada fetch
+  // Esto refresca el token automáticamente si es necesario
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session) throw new Error("No hay sesión activa");
+
   const response = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { 
+      'Authorization': `Bearer ${session.access_token}` // Usamos el token fresco
+    }
   });
-  if (!response.ok) throw new Error('Error de datos');
+
+  if (!response.ok) {
+      // Si el backend nos batea (401), lanzamos error
+      if (response.status === 401) throw new Error("Sesión expirada");
+      throw new Error('Error al cargar datos');
+  }
+  
   return response.json();
 };
 
@@ -51,7 +66,7 @@ export default function Page() {
   // SWR se activa automágicamente cuando 'session' existe.
   // Si session es null, pasamos null y SWR se queda en "pausa".
   const { data: dashboards, error, isLoading: dataLoading } = useSWR(
-    session ? [`${process.env.NEXT_PUBLIC_API_URL}/api/dashboards`, session.access_token] : null,
+    session ? [`${process.env.NEXT_PUBLIC_API_URL}/api/dashboards`] : null,
     fetcher,
     {
       revalidateOnFocus: false, // No recargar al cambiar de pestaña
