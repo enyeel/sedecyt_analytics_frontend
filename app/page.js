@@ -73,6 +73,13 @@ export default function Page() {
       dedupingInterval: 60000,  // Usar caché de RAM por 1 minuto
       keepPreviousData: true,   // Muestra datos anteriores mientras carga los nuevos
       shouldRetryOnError: false,
+      onError: (err) => {
+        // Si el error es de autenticación, cerramos sesión suavemente
+        if (err.message === 'Sesión expirada' || err.message.includes('401')) {
+          console.warn("Sesión caducada, redirigiendo al login...");
+          handleLogout(); // Esto pone session = null y muestra el Login
+        }
+      }
     }
   );
 
@@ -109,13 +116,12 @@ export default function Page() {
     <AppHeader session={session} onLogout={handleLogout} />
       <div className="contentContainer">
         {!session ? (
-          // 👇 AQUÍ ENVOLVEMOS EL LOGIN
           <div className="fullScreenCenter">
             <LoginForm onLogin={handleLogin} />
           </div>
         ) : (
           <>
-            {error && (() => { throw error; })()}
+            {error && error.message !== 'Sesión expirada' && (() => { throw error; })()}
 
             {/* Vista Home */}
             {view === 'home' && (
