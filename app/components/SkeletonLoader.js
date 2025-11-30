@@ -16,7 +16,7 @@ export default function SkeletonLoader({ type = 'home', count = 6 }) {
 
                 {/* GRID DE TARJETAS */}
                 <div className={styles.homeGrid}>
-                    {[1, 2].map((i) => (
+                    {[1, 2, 3].map((i) => (
                         <div key={i} className={`${styles.homeCard} ${styles.shimmerBlock}`}>
                             {/* Icono */}
                             <div className={styles.iconSkeleton} />
