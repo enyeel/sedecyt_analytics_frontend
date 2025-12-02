@@ -16,7 +16,11 @@ const fetcher = async ([url]) => { // Ya no recibimos el token en los argumentos
   // Esto refresca el token automáticamente si es necesario
   const { data: { session } } = await supabase.auth.getSession();
   
-  if (!session) throw new Error("No hay sesión activa");
+  if (!session) {
+    console.warn("No se encontró sesión activa. Redirigiendo...");
+    setSession(null); // Esto disparará el re-render para mostrar el Login
+    return null; // Retornamos null o undefined para detener la ejecución sin explotar
+  }
 
   const response = await fetch(url, {
     headers: { 
@@ -25,9 +29,19 @@ const fetcher = async ([url]) => { // Ya no recibimos el token en los argumentos
   });
 
   if (!response.ok) {
-      // Si el backend nos batea (401), lanzamos error
-      if (response.status === 401) throw new Error("Sesión expirada");
-      throw new Error('Error al cargar datos');
+      // --- AQUÍ ESTÁ EL CAMBIO CRÍTICO ---
+          if (response.status === 401 || response.status === 403) {
+            console.warn("Sesión expirada o inválida. Cerrando sesión localmente...");
+            await supabase.auth.signOut(); // Limpiamos Supabase
+            setSession(null); // Estado a null -> React renderizará el Login automáticamente
+            return; // DETENEMOS la ejecución aquí. No lanzamos error.
+          }
+          // -----------------------------------
+
+          if (!response.ok) {
+            // Aquí sí lanzamos error si es un 500 (servidor caído) u otro problema real
+            throw new Error(`Error del servidor: ${response.status}`);
+          }
   }
   
   return response.json();
@@ -121,7 +135,7 @@ export default function Page() {
           </div>
         ) : (
           <>
-            {error && error.message !== 'Sesión expirada' && (() => { throw error; })()}
+            {error && error.message !== 'Sesión expirada' && (() => { throw error; console.log(error.message) })()}
 
             {/* Vista Home */}
             {view === 'home' && (
