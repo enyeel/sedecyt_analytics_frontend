@@ -10,38 +10,36 @@ import AppHeader from './components/AppHeader';
 import SkeletonLoader from './components/SkeletonLoader';
 
 // 1. Definimos el "fetcher" (el mensajero) fuera del componente
-const fetcher = async ([url]) => { // Ya no recibimos el token en los argumentos
+const fetcher = async ([url]) => {
   
-  // 1. Pedir sesión ACTUAL a Supabase antes de cada fetch
-  // Esto refresca el token automáticamente si es necesario
+  // 1. Verificar sesión en Supabase
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
-    console.warn("No se encontró sesión activa. Redirigiendo...");
-    setSession(null); // Esto disparará el re-render para mostrar el Login
-    return null; // Retornamos null o undefined para detener la ejecución sin explotar
+    // NO usamos setSession aquí. Lanzamos el error para que SWR lo atrape.
+    throw new Error("Sesión expirada"); 
   }
 
   const response = await fetch(url, {
     headers: { 
-      'Authorization': `Bearer ${session.access_token}` // Usamos el token fresco
+      'Authorization': `Bearer ${session.access_token}`
     }
   });
 
   if (!response.ok) {
-      // --- AQUÍ ESTÁ EL CAMBIO CRÍTICO ---
-          if (response.status === 401 || response.status === 403) {
-            console.warn("Sesión expirada o inválida. Cerrando sesión localmente...");
-            await supabase.auth.signOut(); // Limpiamos Supabase
-            setSession(null); // Estado a null -> React renderizará el Login automáticamente
-            return; // DETENEMOS la ejecución aquí. No lanzamos error.
-          }
-          // -----------------------------------
+      // Manejo de 401/403
+      if (response.status === 401 || response.status === 403) {
+        console.warn("Detectado 401/403 en fetcher. Limpiando Supabase...");
+        
+        // Podemos limpiar la sesión de Supabase aquí (es global)
+        await supabase.auth.signOut(); 
+        
+        // ¡CRÍTICO! Lanzamos el error con el mensaje EXACTO que tu onError espera
+        throw new Error("Sesión expirada");
+      }
 
-          if (!response.ok) {
-            // Aquí sí lanzamos error si es un 500 (servidor caído) u otro problema real
-            throw new Error(`Error del servidor: ${response.status}`);
-          }
+      // Otros errores
+      throw new Error(`Error del servidor: ${response.status}`);
   }
   
   return response.json();
@@ -123,7 +121,15 @@ export default function Page() {
   // --- RENDERIZADO ---
   if (authLoading) return <div className="fullScreenCenter"><div className="loaderSpinner"></div></div>;
 
-  if (error) { throw error; }
+  if (error) {
+    // Si el error es de sesión, NO LANZAMOS NADA. 
+    // Retornamos null mientras el 'handleLogout' (llamado en onError) hace efecto y nos manda al Login.
+    if (error.message === 'Sesión expirada' || error.message.includes('401')) {
+      return null; 
+    }
+    // Si es otro error (ej. se cayó el server 500), ese sí que explote el Boundary si quieres
+    throw error; 
+  }
 
   return (
     <>
