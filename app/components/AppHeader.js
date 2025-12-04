@@ -60,14 +60,21 @@ export default function AppHeader({ session, onLogout }) {
   return (
     <header className={styles.appHeader}>
       <div className={styles.left}>
-        <Image
-          src="/logo.png?v=2"
-          alt="SEDECyT Logo"
-          className={styles.logo}
-          width={342}
-          height={100}
-          priority={true}
-        />
+        <picture className={styles.logoWrapper}>
+          <source 
+              media="(min-width: 768px)" 
+              srcSet="/logo-full.png" 
+          />
+          <source 
+              media="(min-width: 500px)" 
+              srcSet="/logo-medium.png" 
+          />
+          <img 
+              src="/logo-small.png" 
+              alt="Logo SEDECYT" 
+              className={styles.logo} 
+          />
+        </picture>
       </div>
 
       <div className={styles.center} />

@@ -9,23 +9,39 @@
 
 /* Botón flotante (arriba izquierda, debajo del header) */
 .fab {
+  /* Posición: Lo mantenemos fijo, pero ajustamos un poco */
   position: fixed;
-  top: calc(90px + 12px);
-  left: 12px;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: var(--color-brand-sedecyt);
-  color: var(--white);
-  border: none;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.12);
+  top: 105px; /* Un poco más abajo del header (90px) */
+  left: 20px;
+  
+  /* ESTILO: Cambiamos de bloque sólido a botón blanco flotante */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Hacemos que sea perfectamente redondo */
+  background: var(--white); /* Fondo blanco limpio */
+  color: var(--color-brand-sedecyt); /* El ícono toma el color de la marca */
+  border: 1px solid var(--gray-light); /* Borde sutil */
+  
+  /* Sombra suave para dar profundidad (elevation) */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
   display: inline-flex;
   align-items: center;
   justify-content: center;
   z-index: 1100;
   cursor: pointer;
-  font-size: 1.05rem;
-  display: flex;
+  font-size: 1.2rem;
+  
+  /* Transición suave para el hover */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover: Se llena de color o se eleva ligeramente */
+.fab:hover {
+  background: var(--color-brand-sedecyt); /* Ahora sí usamos el azul al interactuar */
+  color: var(--white);
+  transform: translateY(-2px); /* Pequeño "salto" */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Grid de gráficas ocupa todo el ancho; quedará parcialmente tapado por el sidebar cuando esté abierto */
