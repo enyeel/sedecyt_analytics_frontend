@@ -61,7 +61,7 @@ export default function AppHeader({ session, onLogout }) {
     <header className={styles.appHeader}>
       <div className={styles.left}>
         <Image
-          src="/logo.png"
+          src="/logo.png?v=2"
           alt="SEDECyT Logo"
           className={styles.logo}
           width={342}

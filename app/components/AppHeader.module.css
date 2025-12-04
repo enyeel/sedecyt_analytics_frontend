@@ -60,7 +60,7 @@
 
 .helpButton {
     background: transparent;
-    border: 1px solid #f903b8;
+    border: 1px solid #ff0066;
     border-radius: 8px;
     padding: 0.4rem 0.6rem;
     cursor: pointer;
@@ -71,7 +71,7 @@
 
 .helpButton:hover {
     background: rgba(249, 3, 184, 0.08);
-    border-color: #f903b8;
+    border-color: #ff0066;
 }
 
 /* búsqueda */
@@ -185,7 +185,7 @@
   padding: 10px 12px;
   border-radius: 10px;
   background: rgba(249, 3, 184, 0.05);
-  border-left: 3px solid #f903b8;
+  border-left: 3px solid #ff0066;
   animation: slideDown 160ms ease-out;
 }
 
@@ -212,7 +212,7 @@
 
 .contactLink {
   margin-top: 6px;
-  background: linear-gradient(135deg, #f903b8, #ff6bcf);
+  background: linear-gradient(135deg, #ff0066,#ff3d8b);
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
@@ -243,7 +243,7 @@
 }
 
 .contactBox a {
-  color: #f903b8;
+  color: #ff0066;
   text-decoration: none;
 }
 
