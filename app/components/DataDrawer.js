@@ -139,7 +139,7 @@ export default function DataDrawer({ session }) {
                             <div className="animate-enter"
                                 style={{
                                     opacity: isOpen ? 1 : 0,
-                                    transition: 'opacity 1s',
+                                    transition: 'opacity 1.2s',
                                 }}>
                                 <DataTable dataPackage={data} />
                             </div>
