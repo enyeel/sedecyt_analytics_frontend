@@ -21,7 +21,13 @@ export default function AppHeader({ session, onLogout }) {
   const faqs = [
     { id: 'login', q: 'No puedo iniciar sesión', a: 'Verifica tu usuario/contraseña. Si persiste, restablece contraseña desde la pantalla de login.' },
     { id: 'data', q: 'Los datos no se actualizan', a: 'Los dashboards se actualizan cada hora. Puedes forzar actualización recargando la página.' },
-    { id: 'download', q: 'No puedo descargar un informe', a: 'Comprueba permisos de tu cuenta y que tu navegador permita descargas desde este dominio.' }
+    { id: 'download', q: 'No puedo descargar un informe', a: 'Comprueba permisos de tu cuenta y que tu navegador permita descargas desde este dominio.' },
+    { id: 'access', q: '¿Cómo solicito acceso a datos adicionales?', a: 'Solicita acceso mediante el formulario de contacto o enviando un email a soporte indicando el tipo de datos y justificación.' },
+    { id: 'export', q: '¿En qué formatos puedo exportar los informes?', a: 'Actualmente soportamos CSV y PDF. Las opciones de exportación aparecen en el menú de cada informe.' },
+    { id: 'refresh', q: '¿Con qué frecuencia se actualizan las fuentes de datos?', a: 'La mayoría de las fuentes se actualizan cada hora; algunas administrativas se actualizan diariamente.' },
+    { id: 'privacy', q: '¿Cómo se protege la información sensible?', a: 'Los datos sensibles se anonimizan y el acceso está controlado por roles. Revisamos permisos periódicamente.' },
+    { id: 'mobile', q: '¿La aplicación funciona en móviles?', a: 'Sí, la interfaz es responsive; algunos paneles complejos se recomiendan ver en tablet/desktop.' },
+    { id: 'reportBug', q: 'Encontré un error, ¿cómo lo reporto?', a: 'Envíanos un email a soporte con una descripción, pasos para reproducir y captura si es posible.' }
   ];
 
   useEffect(() => {

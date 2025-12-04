@@ -102,8 +102,35 @@
   box-sizing: border-box;
 }
 
-.helpList { display: flex; flex-direction: column; gap: 6px; padding: 4px 2px; }
+/* Lista de preguntas: altura fija + scroll para no agrandar el recuadro */
+.helpList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 2px;
+  max-height: 220px;    /* ajusta este valor si deseas más/menos alto del recuadro */
+  overflow-y: auto;
+  padding-right: 6px;   /* espacio para la barra de scroll */
+  box-sizing: border-box;
+}
 
+/* Estilos de scrollbar (WebKit) para que se integre visualmente */
+.helpList::-webkit-scrollbar {
+  width: 8px;
+}
+.helpList::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.08);
+  border-radius: 6px;
+}
+.helpList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Para navegadores que respeten scrollbar-width */
+.helpList {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.08) transparent;
+}
 /* --- ESTILOS PARA PANEL DESPLEGABLE DE FAQ --- */
 .helpItem {
   text-align: left;
