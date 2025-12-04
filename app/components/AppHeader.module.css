@@ -104,6 +104,7 @@
 
 .helpList { display: flex; flex-direction: column; gap: 6px; padding: 4px 2px; }
 
+/* --- ESTILOS PARA PANEL DESPLEGABLE DE FAQ --- */
 .helpItem {
   text-align: left;
   padding: 0.55rem 0.6rem;
@@ -113,86 +114,76 @@
   cursor: pointer;
   color: var(--color-text-primary);
   font-weight: 600;
-}
-.helpItem:hover { background: hsl(220, 25%, 96%); }
-
-.contactInline {
-  margin-top: 0.5rem;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  transition: background 150ms ease;
+  width: 100%;
 }
 
-.contactLink {
-  background: transparent;
-  border: none;
-  color: var(--color-primary-magenta);
-  cursor: pointer;
-  font-weight: 700;
-  text-decoration: underline;
-}
-
-.helpSolution { padding: 0.25rem; }
-.backBtn {
-  background: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  margin-bottom: 6px;
-  font-size: 0.95rem;
-}
-.helpQ { margin: 0 0 0.25rem 0; font-size: 0.95rem; color: var(--color-text-primary); }
-.helpA { margin: 0 0 0.6rem 0; color: var(--color-text-secondary); }
-
-.contactBox {
-  margin-top: 0.6rem;
-  padding: 0.55rem;
-  border-radius: 8px;
-  background: hsl(220, 25%, 98%);
-  border: 1px solid hsl(220, 25%, 92%);
-  font-size: 0.9rem;
-}
-.contactBox a { color: var(--color-primary-magenta); text-decoration: none; }
-
-/* HELP: panel inline por pregunta */
-.helpItemWrap {
-  display: block;
-  margin-bottom: 4px;
+.helpItem:hover {
+  background: hsl(220, 25%, 96%);
 }
 
 .activeHelpItem {
-  background: hsl(220, 25%, 96%);
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02);
+  background: hsl(220, 25%, 94%);
+  font-weight: 700;
+}
+
+.helpItemIcon {
+  display: inline-block;
+  font-size: 0.75rem;
+  min-width: 12px;
+  transition: transform 150ms ease;
 }
 
 .helpPanel {
-  margin-top: 6px;
-  padding: 0.55rem;
-  border-radius: 8px;
-  background: #fff;
-  border: 1px solid hsl(220, 25%, 96%);
-  box-shadow: 0 8px 20px rgba(16,24,40,0.06);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 260ms ease, opacity 180ms ease, transform 180ms ease;
-  opacity: 0;
-  transform: translateY(-4px);
+  margin: 6px 0 0 28px;
+  padding: 0.6rem;
+  border-radius: 6px;
+  background: hsl(220, 25%, 98%);
+  border-left: 3px solid var(--color-primary-magenta);
+  animation: slideDown 200ms ease-out;
 }
 
-/* cuando se renderiza la caja aumentamos el max-height con una regla inline por render (no CSS-only),
-   pero el efecto también se aprecia si dejamos un max-height alto */
-.helpItemWrap .helpPanel,
-.helpMenu > .helpPanel {
-  max-height: 240px;
-  opacity: 1;
-  transform: translateY(0);
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* ajuste para box de contacto ya declarada (.contactBox) */
+.helpA {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .contactBox {
-  margin-top: 0;
-  padding: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 6px;
+  background: #f0f4ff;
+  border-left: 3px solid #6366f1;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.contactBox strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--color-text-primary);
+}
+
+.contactBox a {
+  color: var(--color-primary-magenta);
+  text-decoration: none;
+}
+
+.contactBox a:hover {
+  text-decoration: underline;
 }

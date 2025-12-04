@@ -5,7 +5,8 @@ import styles from './AppHeader.module.css';
 
 export default function AppHeader({ session, onLogout }) {
   const [helpOpen, setHelpOpen] = useState(false);
-  const [selectedHelp, setSelectedHelp] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+  const [showContact, setShowContact] = useState(false);
   const helpBtnRef = useRef(null);
   const helpMenuRef = useRef(null);
 
@@ -28,12 +29,10 @@ export default function AppHeader({ session, onLogout }) {
       if (!helpOpen) return;
       if (helpMenuRef.current?.contains(e.target) || helpBtnRef.current?.contains(e.target)) return;
       setHelpOpen(false);
-      setSelectedHelp(null);
     }
     function onKey(e) {
       if (e.key === 'Escape') {
         setHelpOpen(false);
-        setSelectedHelp(null);
       }
     }
     document.addEventListener('click', onDocClick);
@@ -47,6 +46,10 @@ export default function AppHeader({ session, onLogout }) {
   useEffect(() => {
     if (!helpOpen && helpBtnRef.current) helpBtnRef.current.focus();
   }, [helpOpen]);
+
+  const toggleFaq = (id) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
 
   return (
     <header className={styles.appHeader}>
@@ -65,15 +68,15 @@ export default function AppHeader({ session, onLogout }) {
 
       {session ? (
         <div className={styles.right}>
-          {/* búsqueda comentada temporalmente */}
+          {/* soporte ahora dentro del bloque derecho con menú */}
           <div className={styles.helpWrap}>
             <button
               ref={helpBtnRef}
               className={styles.helpButton}
-              title="Soporte"
+              title="Soporte y preguntas frecuentes"
               aria-haspopup="true"
               aria-expanded={helpOpen}
-              onClick={() => { setHelpOpen(v => !v); if (helpOpen) setSelectedHelp(null); }}
+              onClick={() => setHelpOpen(!helpOpen)}
               type="button"
             >
               ?
@@ -88,17 +91,21 @@ export default function AppHeader({ session, onLogout }) {
               >
                 <div className={styles.helpList}>
                   {faqs.map(item => (
-                    <div key={item.id} className={styles.helpItemWrap}>
+                    <div key={item.id}>
                       <button
-                        className={`${styles.helpItem} ${selectedHelp?.id === item.id ? styles.activeHelpItem : ''}`}
-                        onClick={() => setSelectedHelp(prev => (prev?.id === item.id ? null : item))}
+                        className={`${styles.helpItem} ${expandedId === item.id ? styles.activeHelpItem : ''}`}
+                        onClick={() => toggleFaq(item.id)}
                         type="button"
+                        aria-expanded={expandedId === item.id}
                       >
+                        <span className={styles.helpItemIcon}>
+                          {expandedId === item.id ? '▼' : '▶'}
+                        </span>
                         {item.q}
                       </button>
 
-                      {selectedHelp?.id === item.id && (
-                        <div className={styles.helpPanel} role="region" aria-live="polite">
+                      {expandedId === item.id && (
+                        <div className={styles.helpPanel}>
                           <p className={styles.helpA}>{item.a}</p>
                         </div>
                       )}
@@ -110,20 +117,19 @@ export default function AppHeader({ session, onLogout }) {
                   <small>¿No encuentras la respuesta?</small>
                   <button
                     className={styles.contactLink}
-                    onClick={() => setSelectedHelp(prev => (prev?.id === 'contact' ? null : { id: 'contact' }))}
+                    onClick={() => setShowContact(!showContact)}
                     type="button"
                   >
                     Contactar soporte
                   </button>
                 </div>
 
-                {selectedHelp?.id === 'contact' && (
-                  <div className={styles.helpPanel} role="region" aria-live="polite">
+                {showContact && (
+                  <div className={styles.helpPanel}>
                     <div className={styles.contactBox}>
-                      <strong>Soporte:</strong>
-                      <div>Nombre: Equipo de Soporte SEDECYT</div>
-                      <div>Email: <a href="mailto:soporte@sedecyt.gov.ar">soporte@sedecyt.gov.ar</a></div>
-                      <div>Tel: +54 11 1234-5678</div>
+                      <strong>📞 Equipo de Soporte SEDECYT</strong>
+                      <div>📧 Email: <a href="mailto:soporte@sedecyt.gov.ar">soporte@sedecyt.gov.ar</a></div>
+                      <div>📱 Tel: +54 11 1234-5678</div>
                     </div>
                   </div>
                 )}
