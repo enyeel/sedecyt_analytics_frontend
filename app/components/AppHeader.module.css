@@ -63,6 +63,15 @@
     border: 1px solid #f903b8;
     border-radius: 8px;
     padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 120ms ease;
+}
+
+.helpButton:hover {
+    background: rgba(249, 3, 184, 0.08);
+    border-color: #f903b8;
 }
 
 /* búsqueda */
@@ -85,129 +94,156 @@
     min-width: 180px;
 }
 
-.helpWrap { position: relative; display: inline-block; }
+.helpWrap { 
+    position: relative; 
+    display: inline-block; 
+}
 
+/* ─────────────────────────────────────────────
+   MENU DE AYUDA - NUEVA VERSION MODERNA
+   ───────────────────────────────────────────── */
 .helpMenu {
   position: absolute;
   right: 0;
-  top: calc(100% + 8px);
-  width: 320px;
+  top: calc(100% + 10px);
+  width: 330px;
   max-width: 80vw;
-  background: #fff;
-  border: 1px solid hsl(220, 25%, 92%);
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.12);
+  border: 1px solid rgba(255,255,255,0.4);
+  animation: fadeIn 150ms ease-out;
   z-index: 1200;
-  padding: 0.5rem;
-  box-sizing: border-box;
 }
 
-/* Lista de preguntas: altura fija + scroll para no agrandar el recuadro */
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Lista de preguntas */
 .helpList {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 4px 2px;
-  max-height: 220px;    /* ajusta este valor si deseas más/menos alto del recuadro */
+  max-height: 240px;
   overflow-y: auto;
-  padding-right: 6px;   /* espacio para la barra de scroll */
-  box-sizing: border-box;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
 }
 
-/* Estilos de scrollbar (WebKit) para que se integre visualmente */
-.helpList::-webkit-scrollbar {
-  width: 8px;
-}
+/* Scrollbar WebKit */
+.helpList::-webkit-scrollbar { width: 8px; }
 .helpList::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.08);
-  border-radius: 6px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 8px;
 }
 .helpList::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Para navegadores que respeten scrollbar-width */
-.helpList {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.08) transparent;
-}
-/* --- ESTILOS PARA PANEL DESPLEGABLE DE FAQ --- */
+/* Botones de FAQ */
 .helpItem {
-  text-align: left;
-  padding: 0.55rem 0.6rem;
-  border-radius: 8px;
+  width: 100%;
   background: transparent;
   border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
   cursor: pointer;
-  color: var(--color-text-primary);
+  font-size: 14px;
   font-weight: 600;
+  color: #222;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background 150ms ease;
-  width: 100%;
+  gap: 10px;
+  transition: background 120ms ease, padding 120ms ease;
 }
 
 .helpItem:hover {
-  background: hsl(220, 25%, 96%);
+  background: rgba(0,0,0,0.05);
 }
 
 .activeHelpItem {
-  background: hsl(220, 25%, 94%);
-  font-weight: 700;
+  background: rgba(249, 3, 184, 0.08);
 }
 
+/* Íconos + / – */
 .helpItemIcon {
-  display: inline-block;
-  font-size: 0.75rem;
-  min-width: 12px;
-  transition: transform 150ms ease;
+  width: 14px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
+/* Panel de respuesta */
 .helpPanel {
-  margin: 6px 0 0 28px;
-  padding: 0.6rem;
-  border-radius: 6px;
-  background: hsl(220, 25%, 98%);
-  border-left: 3px solid var(--color-primary-magenta);
-  animation: slideDown 200ms ease-out;
+  margin: 4px 0 10px 26px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(249, 3, 184, 0.05);
+  border-left: 3px solid #f903b8;
+  animation: slideDown 160ms ease-out;
 }
 
 @keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .helpA {
   margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 13.5px;
+  color: #444;
+  line-height: 1.45;
 }
 
+/* Línea final y botón de contacto */
+.contactInline {
+  text-align: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  font-size: 13px;
+}
+
+.contactLink {
+  margin-top: 6px;
+  background: linear-gradient(135deg, #f903b8, #ff6bcf);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 120ms ease;
+  display: inline-block;
+}
+
+.contactLink:hover {
+  opacity: 0.88;
+}
+
+/* Info de contacto */
 .contactBox {
-  padding: 0.6rem;
-  border-radius: 6px;
-  background: #f0f4ff;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.03);
   border-left: 3px solid #6366f1;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 13px;
 }
 
 .contactBox strong {
-  display: block;
-  margin-bottom: 0.4rem;
-  color: var(--color-text-primary);
+  color: #111;
 }
 
 .contactBox a {
-  color: var(--color-primary-magenta);
+  color: #f903b8;
   text-decoration: none;
 }
 
