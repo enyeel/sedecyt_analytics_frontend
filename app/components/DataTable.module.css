@@ -1,0 +1,179 @@
+.tableContainer {
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate;
+    /* Necesario para que sticky funcione bien en bordes */
+    border-spacing: 0;
+    /* Elimina espacios dobles */
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+}
+
+/* --- EL TRUCO DE EXCEL --- */
+.table th {
+    position: sticky;
+    /* 📌 SE PEGA */
+    top: 0;
+    /* AL TECHO */
+    z-index: 10;
+    /* ENCIMA DE LOS DATOS */
+
+    background: #f8f9fc;
+    /* Color de fondo SÓLIDO (importante para que no se trasluzca la data al scrollear) */
+    /* Opcional: Un poco de blur si quieres glassmorphism, pero sólido es mejor para lectura */
+    /* background: rgba(240, 242, 245, 0.95); backdrop-filter: blur(5px); */
+
+    text-align: left;
+    padding: 1rem;
+    font-weight: 700;
+    color: var(--color-brand-sedecyt);
+    white-space: nowrap;
+
+    /* Borde inferior fijo para que se distinga al bajar */
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    vertical-align: middle;
+    background: transparent;
+}
+
+/* Fila Zebra sutil (opcional, pero ayuda a leer) */
+.table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.table tr:hover {
+    background: rgba(255, 255, 255, 0.6);
+    /* Highlight al pasar el mouse */
+}
+
+/* Última fila sin borde */
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+/* ESTILO DE LA CELDA BASE */
+.cellContent {
+    /* 1. LÍMITE DE ANCHO: Define hasta dónde puede crecer la celda */
+    max-width: 300px; /* Puedes ajustar este valor (ej. 250px o 20rem) */
+    
+    /* 2. UNA SOLA LÍNEA: Obliga al texto a no bajar al siguiente renglón */
+    white-space: nowrap; 
+    
+    /* 3. OCULTAR SOBRANTE: Corta todo lo que se salga del ancho definido */
+    overflow: hidden; 
+    
+    /* 4. PUNTOS SUSPENSIVOS: Agrega el "..." automático al final */
+    text-overflow: ellipsis; 
+    
+    /* Extras visuales */
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+
+.cellContent:hover {
+    background: rgba(0, 0, 0, 0.05);
+    /* Feedback visual sutil */
+    color: var(--color-brand-sedecyt);
+}
+
+/* --- EL MODAL DE TEXTO COMPLETO --- */
+.textModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    /* Fondo oscuro suave */
+    z-index: 9999;
+    /* Encima de TODO */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.textModalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    /* Para que no se salga de la pantalla verticalmente */
+    display: flex;
+    flex-direction: column;
+    animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.textModalBody {
+    overflow-y: auto;
+    /* Scroll interno si es una biblia */
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    white-space: pre-wrap;
+    /* Respeta saltos de línea originales */
+    margin-bottom: 1.5rem;
+    padding-right: 10px;
+    /* Espacio para el scrollbar */
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.modalTitle {
+    font-weight: 700;
+    color: var(--color-brand-sedecyt);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.closeButton {
+    background: var(--color-brand-sedecyt);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    align-self: flex-end;
+    /* Botón a la derecha */
+    transition: opacity 0.2s;
+}
+
+.closeButton:hover {
+    opacity: 0.9;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

@@ -76,7 +76,7 @@ export default function DashboardDetail({
         onGoHome={onGoHome}
       />
       {/* Contenedor principal de contenido */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', className: 'animate-enter' }}>
 
         {/* TÍTULO Y DESCRIPCIÓN (Siempre visibles, vienen del resumen) */}
         <div style={{ gridColumn: '1 / -1', marginBottom: '1rem', padding: '2rem 2rem 0 2rem' }}>
@@ -90,7 +90,7 @@ export default function DashboardDetail({
             <SkeletonLoader type="detail" count={4} />
         ) : (
             /* Si terminó, mostramos el Grid Real */
-            <section className={styles.chartGrid}>
+            <section className={`${styles.chartGrid} animate-enter`}>
                 
                 {charts.length === 0 && !error && (
                     <div className={styles.noChartsMessage}>

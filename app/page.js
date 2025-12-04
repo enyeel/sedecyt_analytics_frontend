@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import LoginForm from './components/LoginForm';
 import DashboardHome from './components/DashboardHome';
 import DashboardDetail from './components/DashboardDetail';
+import DataDrawer from './components/DataDrawer';
 import AppHeader from './components/AppHeader';
 import SkeletonLoader from './components/SkeletonLoader';
 
@@ -149,11 +150,13 @@ export default function Page() {
                 {/* Si está cargando, mostramos Skeletons */}
                 {dataLoading && <SkeletonLoader type="home" />}
                 {/* Si ya hay datos, mostramos el componente */}
-                {dashboards && (
-                  <DashboardHome
-                    dashboards={dashboards}
-                    onDashboardSelect={handleDashboardSelect}
-                  />
+                {!dataLoading && dashboards && (
+                  <div className="animate-enter"> {/* Wrapper simple para animar */}
+                      <DashboardHome
+                        dashboards={dashboards}
+                        onDashboardSelect={handleDashboardSelect}
+                      />
+                  </div>
                 )}
               </>
             )}
@@ -168,6 +171,8 @@ export default function Page() {
                 onDashboardSelect={handleDashboardSelect}
               />
             )}
+
+            <DataDrawer session={session} />
           </>
         )}
       </div>

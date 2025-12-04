@@ -1,0 +1,234 @@
+@keyframes peekAnimation {
+    0% {
+        transform: translateY(100%);
+    }
+
+    /* Empieza escondido */
+    50% {
+        transform: translateY(500px);
+    }
+
+    /* Se asienta en la posición de "mírame" */
+    100% {
+        transform: translateY(calc(100% - 50px));
+    }
+
+    /* Baja a su posición cerrada */
+}
+
+/* 2. Clase activadora */
+.introAnimation {
+    /* Duración total: 2.5 segundos de show */
+    animation: peekAnimation .8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    /* 'forwards' asegura que se quede en la posición final si JS tarda en reaccionar */
+}
+
+.drawerContainer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90vh;
+    /* Ocupa casi toda la pantalla al abrirse */
+    z-index: 2000;
+    /* Por encima de todo, incluso del Sidebar */
+
+    /* GLASSMORPHISM INTENSO */
+    background: rgba(235, 235, 235, 0.7);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+
+
+    /* LA MAGIA DEL DESLIZAMIENTO */
+    /* transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); */
+    transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+    will-change: transform;
+    /* Efecto rebote suave */
+    display: flex;
+    flex-direction: column;
+
+    will-change: transform;
+    /* Le avisa a la GPU que se prepare */
+    transform: translateY(100%);
+    /* Estado base default explícito */
+}
+
+/* Estado: CERRADO (Solo se ve la barra de 50px) */
+.closed {
+    transform: translateY(calc(100% - 50px));
+}
+
+/* Estado: ABIERTO (Sube todo) */
+.open {
+    transform: translateY(0);
+}
+
+/* --- LA BARRA "GATILLO" (HANDLE) --- */
+.handleBar {
+    height: 40px;
+    /* Un poco más delgado, más sutil */
+    width: 100%;
+
+    /* --- GLASSMORPHISM --- */
+    background: rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+
+    /* Borde solo arriba para definir el límite */
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    border-bottom: none;
+    /* Se fusiona con el drawer */
+
+    /* Bordes redondeados superiores */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Texto elegante */
+    color: var(--color-brand-sedecyt);
+    /* Azul corporativo para el texto */
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+
+    position: relative;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+    /* Sombra muy suave hacia arriba */
+    transition: all 0.3s ease;
+}
+
+.handleBar:hover {
+    background: rgba(255, 255, 255, 0.85);
+    /* Se ilumina al hover */
+    color: var(--color-primary-magenta);
+    /* Cambio de color sutil al interactuar */
+    box-shadow: 0 -6px 15px rgba(0, 0, 0, 0.08);
+    /* Sombra crece un poco */
+}
+
+/* El triangulito */
+.chevron {
+    margin-left: 8px;
+    transition: transform 0.4s;
+    font-size: 1rem;
+    opacity: 0.7;
+    /* Un poco más discreto */
+}
+
+.open .chevron {
+    transform: rotate(180deg);
+}
+
+/* --- CONTENIDO INTERNO --- */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Ocupa todo el espacio disponible */
+    overflow: hidden;
+    /* 🔥 IMPORTANTE: El cajón NO scrollea, scrollea la tabla */
+    padding: 0;
+}
+
+/* --- HEADER (FIJO Y RESPONSIVO) --- */
+.header {
+    /* No usamos sticky porque el padre no scrollea, así que se queda fijo arriba naturalmente */
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 1rem 2rem;
+    z-index: 20;
+
+    display: flex;
+    flex-shrink: 0;
+    /* No dejes que la tabla te aplaste */
+
+    /* 📱 MÓVIL (Por defecto) */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+}
+
+/* 🖥️ ESCRITORIO (> 768px) */
+@media (min-width: 768px) {
+    .header {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+        gap: 0;
+    }
+}
+
+/* --- ÁREA DE LA TABLA (SCROLLABLE) --- */
+.tableWrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0;
+    position: relative;
+}
+
+/* 🖥️ ESCRITORIO (> 768px) */
+@media (min-width: 768px) {
+    .header {
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        /* Alineación vertical al centro */
+        text-align: left;
+        /* Regresamos el texto a la izquierda */
+        gap: 0;
+    }
+}
+
+/* --- AJUSTE EXTRA PARA LOS TABS --- */
+/* Para que si los botones son muchos, se pueda hacer scroll horizontal en móviles muy peques */
+.tabs {
+    display: flex;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 5px;
+    border-radius: 12px;
+    justify-content: center;
+
+    /* Asegura que no se desborde feo */
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    /* Evita que los botones se rompan en dos líneas */
+
+    /* Ocultar barra de scroll fea (opcional) */
+    scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tabBtn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.activeTab {
+    background: white;
+    color: var(--color-brand-sedecyt);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

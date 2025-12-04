@@ -56,5 +56,33 @@ export default function SkeletonLoader({ type = 'home', count = 6 }) {
         );
     }
 
+    if (type === 'table') {
+        return (
+        <div className={styles.tableSkeletonWrapper}>
+            
+            {/* 1. Cabecera Falsa (Simulamos 5 columnas) */}
+            <div className={styles.tableHeaderSkeleton}>
+            {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className={`${styles.tableCellSkeleton} ${styles.shimmerBlock}`} style={{height: '16px', opacity: 0.5}} />
+            ))}
+            </div>
+
+            {/* 2. Filas Falsas (Loop de 'count') */}
+            <div style={{ flex: 1, overflow: 'hidden' }}> {/* Contenedor para cortar lo que sobre */}
+                {Array(count).fill(0).map((_, i) => (
+                <div key={i} className={styles.tableRowSkeleton}>
+                    {/* En cada fila, simulamos 5 celdas con anchos aleatorios visuales */}
+                    <div className={`${styles.tableCellSkeleton} ${styles.shimmerBlock}`} style={{width: '15%'}} />
+                    <div className={`${styles.tableCellSkeleton} ${styles.shimmerBlock}`} style={{width: '30%'}} />
+                    <div className={`${styles.tableCellSkeleton} ${styles.shimmerBlock}`} style={{width: '20%'}} />
+                    <div className={`${styles.tableCellSkeleton} ${styles.shimmerBlock}`} style={{width: '10%'}} />
+                    <div className={`${styles.tableCellSkeleton} ${styles.shimmerBlock}`} style={{width: '25%'}} />
+                </div>
+                ))}
+            </div>
+        </div>
+        );
+    }
+
     return null;
 }
