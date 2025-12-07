@@ -1,32 +1,43 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './DataTable.module.css';
 
 function TextModal({ content, title, onClose }) {
-    if (!content) return null;
+    const [mounted, setMounted] = useState(false);
 
-    return (
+    useEffect(() => {
+        setMounted(true);
+        // Opcional: Bloquear scroll del body cuando abre el modal
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = 'unset'; };
+    }, []);
+    
+    if (!content || !mounted) return null;
+
+    return createPortal(
         <div className={styles.textModalOverlay} onClick={onClose}>
-            <div className={styles.textModalContent} onClick={(e) => e.stopPropagation()}>
-
-                <div className={styles.modalHeader}>
-                    <span className={styles.modalTitle}>{title}</span>
-                    <button
-                        onClick={onClose}
-                        style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#666' }}
-                    >
-                        &times;
-                    </button>
-                </div>
-
-                <div className={styles.textModalBody}>
-                    {content}
-                </div>
-
-                <button className={styles.closeButton} onClick={onClose}>
-                    Cerrar
+        <div className={styles.textModalContent} onClick={(e) => e.stopPropagation()}>
+            
+            <div className={styles.modalHeader}>
+                <span className={styles.modalTitle}>{title}</span>
+                <button 
+                    onClick={onClose} 
+                    style={{background:'none', border:'none', fontSize:'1.5rem', cursor:'pointer', color:'#666'}}
+                >
+                    &times;
                 </button>
             </div>
+
+            <div className={styles.textModalBody}>
+                {content}
+            </div>
+
+            <button className={styles.closeButton} onClick={onClose}>
+                Cerrar
+            </button>
         </div>
+        </div>,
+        document.body
     );
 }
 
