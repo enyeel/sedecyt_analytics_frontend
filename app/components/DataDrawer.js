@@ -15,9 +15,9 @@ const fetcher = async ([url, token]) => {
 };
 
 const TABS = [
-    { id: 'companies', label: '🏢 Empresas', endpoint: '/api/table/companies' },
-    { id: 'contacts', label: '👤 Contactos', endpoint: '/api/table/contacts' },
-    { id: 'responses', label: '📝 Respuestas', endpoint: '/api/table/responses' }
+    { id: 'companies', label: '🏢 Empresas', endpoint: '/api/data/companies-view' },
+    { id: 'contacts', label: '👤 Contactos', endpoint: '/api/data/contacts-view' },
+    { id: 'responses', label: '📝 Respuestas', endpoint: '/api/data/responses-view' }
 ];
 
 export default function DataDrawer({ session }) {
