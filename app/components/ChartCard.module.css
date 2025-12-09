@@ -42,10 +42,39 @@
     aspect-ratio: 16 / 9; /* Un poco más panorámico */
 }
 
-/* La librería chart.js pondrá un <canvas> aquí.
-   Este CSS asegura que ocupe todo el .chartContainer
-*/
+
 .chartContainer canvas {
     width: 100% !important;
     height: 100% !important;
+}
+
+.chartHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.chartActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.actionBtn {
+  background: linear-gradient(135deg, #f903b8, #ff6bcf);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: opacity 120ms ease, transform 100ms ease;
+}
+
+.actionBtn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
 }

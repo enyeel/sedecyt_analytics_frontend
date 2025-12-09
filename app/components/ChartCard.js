@@ -13,6 +13,8 @@ import {
     LineElement
 } from 'chart.js';
 import { Bar, Pie, Line } from 'react-chartjs-2';
+import { useRef } from 'react';
+import { jsPDF } from 'jspdf';
 import styles from './ChartCard.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
@@ -52,9 +54,8 @@ const CHART_COLORS = {
 
 // Función auxiliar para truncar texto largo (ej: "Empresa Manufacturera..." )
 const truncateLabel = (label, maxLength = 15) => {
-    if (label.length > maxLength) {
-        return label.substring(0, maxLength) + '...';
-    }
+    if (!label) return label;
+    if (label.length > maxLength) return label.substring(0, maxLength) + '...';
     return label;
 };
 
@@ -86,7 +87,7 @@ function getSmartOptions(type, data) {
 
                 // Tu lógica original para nombres completos
                 callbacks: {
-                    title: (context) => context[0].label 
+                    title: (context) => context[0]?.label 
                 }
             }
         },
@@ -98,7 +99,7 @@ function getSmartOptions(type, data) {
         const labelCount = labels.length;
         
         // Calculamos longitud promedio de los textos
-        const avgLabelLength = labels.reduce((acc, label) => acc + label.length, 0) / (labelCount || 1);
+        const avgLabelLength = labels.reduce((acc, label) => acc + (label?.length || 0), 0) / (labelCount || 1);
 
         // DECISIÓN AUTOMÁTICA:
         const isHorizontal = labelCount > 8 || avgLabelLength > 12;
@@ -117,13 +118,9 @@ function getSmartOptions(type, data) {
                     ticks: {
                         font: { size: 11 },
                         // Si es horizontal, truncamos las etiquetas del eje Y
-                        callback: function(value, index) {
-                            // Chart.js a veces pasa el valor del índice, recuperamos el label real
-                            const label = this.getLabelForValue(value); 
-                            // Asegúrate de tener la función 'truncateLabel' definida fuera o impórtala
-                            return isHorizontal && typeof truncateLabel === 'function' 
-                                ? truncateLabel(label, 20) 
-                                : label;
+                        callback: function(value) {
+                            const label = this.getLabelForValue ? this.getLabelForValue(value) : value;
+                            return isHorizontal ? truncateLabel(label, 20) : label;
                         }
                     }
                 }
@@ -135,16 +132,18 @@ function getSmartOptions(type, data) {
 }
 
 // El Renderizador
-function ChartRenderer({ type, data, options }) {
-    if (type === 'bar') return <Bar options={options} data={data} />;
-    if (type === 'pie') return <Pie options={options} data={data} />;
-    if (type === 'line') return <Line options={options} data={data} />;
+function ChartRenderer({ type, data, options, chartRef }) {
+    if (type === 'bar') return <Bar ref={chartRef} options={options} data={data} />;
+    if (type === 'pie') return <Pie ref={chartRef} options={options} data={data} />;
+    if (type === 'line') return <Line ref={chartRef} options={options} data={data} />;
     return <p>Gráfica no soportada</p>;
 }
 
 export default function ChartCard({ chart }) {
     // 1. Generamos las opciones inteligentes basadas en los datos
     const smartOptions = getSmartOptions(chart.type, chart.data);
+    const chartRef = useRef(null);
+    const containerRef = useRef(null);
 
     // 2. Asignación de colores (igual que antes, pero un poco más limpia)
     const chartData = {
@@ -193,12 +192,6 @@ export default function ChartCard({ chart }) {
                         CHART_COLORS.SECONDARY_BLUE,
                         CHART_COLORS.ACCENT_YELLOW,
                     ],
-                    hoverBorderColor: [
-                        CHART_COLORS.PRIMARY_MAGENTA,
-                        CHART_COLORS.ACCENT_LIME,
-                        CHART_COLORS.SECONDARY_BLUE,
-                        CHART_COLORS.ACCENT_YELLOW,
-                    ],
                     hoverBorderWidth: 4, // El borde crece
                     hoverOffset: 20 // <--- ESTO ES CLAVE: La rebanada "salta" hacia afuera 20px
                 };
@@ -209,7 +202,7 @@ export default function ChartCard({ chart }) {
                 return {
                     ...dataset,
                     borderColor: CHART_COLORS.BRAND_SEDECYT,
-                    backgroundColor: CHART_COLORS.BRAND_SEDECYT_OP,
+                    backgroundColor: CHART_COLORS.BRAND_SEDECYT + '66',
                     fill: true,
                     // Hacemos que el punto se agrande al pasar el mouse
                     pointHoverRadius: 8, 
@@ -219,26 +212,131 @@ export default function ChartCard({ chart }) {
                 };
             }
             
-            return {
-                ...dataset,
-                backgroundColor: bgColor,
-                borderColor: borderColor,
-                borderWidth: chart.type === 'pie' ? 2 : 0,
-                fill: chart.type === 'line',
-                // Pequeño radio en las barras para verse moderno
-                borderRadius: chart.type === 'bar' ? 4 : 0, 
-            };
+            return dataset;
         })
+    };
+
+    // Helper para obtener el <canvas> real del chart
+    const getCanvasEl = () => {
+        if (!chartRef.current && !containerRef.current) return null;
+        // react-chartjs-2 ref apunta al chart instance que tiene .canvas en v4
+        if (chartRef.current?.canvas) return chartRef.current.canvas;
+        // fallback: buscar canvas dentro del contenedor
+        return containerRef.current?.querySelector('canvas') || null;
+    };
+
+    // Descarga imagen (png/jpg)
+    const downloadImage = async (format = 'png') => {
+        try {
+            const canvas = getCanvasEl();
+            if (!canvas) {
+                alert('No se encontró el canvas del gráfico.');
+                return;
+            }
+            // para mejor resolución puedes escalar (por ejemplo scale=2 para Retina)
+            const scale = 2;
+            const w = canvas.width;
+            const h = canvas.height;
+            const off = document.createElement('canvas');
+            off.width = w * scale;
+            off.height = h * scale;
+            const ctx = off.getContext('2d');
+            ctx.scale(scale, scale);
+            ctx.drawImage(canvas, 0, 0);
+
+            const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+            const dataUrl = off.toDataURL(mime, 0.92);
+
+            // Forzar descarga
+            const link = document.createElement('a');
+            const safeTitle = (chart.title || 'chart').replace(/\s+/g, '-').toLowerCase();
+            link.href = dataUrl;
+            link.download = `${safeTitle}.${format === 'jpg' ? 'jpg' : 'png'}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (err) {
+            console.error(err);
+            alert('Error al generar la imagen.');
+        }
+    };
+
+    // Generar PDF con jsPDF
+    const downloadPDF = async () => {
+        try {
+            const canvas = getCanvasEl();
+            if (!canvas) {
+                alert('No se encontró el canvas del gráfico.');
+                return;
+            }
+            const scale = 2;
+            const w = canvas.width;
+            const h = canvas.height;
+            const off = document.createElement('canvas');
+            off.width = w * scale;
+            off.height = h * scale;
+            const ctx = off.getContext('2d');
+            ctx.scale(scale, scale);
+            ctx.drawImage(canvas, 0, 0);
+            const dataUrl = off.toDataURL('image/png', 0.92);
+
+            // Crear PDF con las mismas dimensiones en px
+            const pdf = new jsPDF({
+                orientation: w >= h ? 'landscape' : 'portrait',
+                unit: 'px',
+                format: [w, h]
+            });
+
+            // addImage formato: ('dataUrl', fmt, x, y, w, h)
+            pdf.addImage(dataUrl, 'PNG', 0, 0, w, h);
+
+            const safeTitle = (chart.title || 'chart').replace(/\s+/g, '-').toLowerCase();
+            pdf.save(`${safeTitle}.pdf`);
+        } catch (err) {
+            console.error(err);
+            alert('Error al generar el PDF.');
+        }
     };
 
     return (
         <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>{chart.title}</h3>
-            <div className={styles.chartContainer}>
+            <div className={styles.chartHeaderRow}>
+                <h3 className={styles.chartTitle}>{chart.title}</h3>
+
+                <div className={styles.chartActions}>
+                    <button
+                        className={styles.actionBtn}
+                        onClick={() => downloadImage('jpg')}
+                        title="Descargar JPG"
+                        type="button"
+                    >
+                        JPG
+                    </button>
+                    <button
+                        className={styles.actionBtn}
+                        onClick={() => downloadImage('png')}
+                        title="Descargar PNG"
+                        type="button"
+                    >
+                        PNG
+                    </button>
+                    <button
+                        className={styles.actionBtn}
+                        onClick={downloadPDF}
+                        title="Exportar a PDF"
+                        type="button"
+                    >
+                        PDF
+                    </button>
+                </div>
+            </div>
+
+            <div ref={containerRef} className={styles.chartContainer}>
                 <ChartRenderer
                     type={chart.type}
                     data={chartData}
-                    options={smartOptions} 
+                    options={smartOptions}
+                    chartRef={chartRef}
                 />
             </div>
         </div>
