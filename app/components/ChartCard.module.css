@@ -89,18 +89,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f903b8, #ff6bcf);
-  color: white;
-  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 10px;
   cursor: pointer;
   font-weight: 700;
-  transition: transform 110ms ease, opacity 120ms ease;
-  box-shadow: 0 6px 14px rgba(249,3,184,0.18);
+  transition: transform 110ms ease, opacity 120ms ease, background 120ms ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
-.exportBtn:hover { transform: translateY(-2px); opacity: 0.98; }
-.exportBtn:focus { outline: 3px solid rgba(249,3,184,0.18); outline-offset: 2px; }
-.exportBtn svg { width: 18px; height: 18px; display: block; color: white; }
+
+.exportBtn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.exportBtn:focus {
+  outline: 2px solid #f903b8;
+  outline-offset: 2px;
+}
+
+.exportBtn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  color: #f903b8;
+}
 
 /* Menú desplegable */
 .exportMenu {

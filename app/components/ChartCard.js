@@ -248,36 +248,42 @@ export default function ChartCard({ chart }) {
     const canvas = getCanvasEl();
     if (!canvas) return null;
 
-    const w = canvas.width;   // device pixels width of original canvas
+    const w = canvas.width;
     const h = canvas.height;
+    const margin = 30; // margen alrededor de todo
     const titlePadding = 14;
     const titleFontSize = 16;
     const titleHeight = title ? titleFontSize + titlePadding * 1.2 : 0;
 
+    // dimensiones totales: gráfico + márgenes + título
+    const totalWidth = w + margin * 2;
+    const totalHeight = h + titleHeight + margin * 2;
+
     const off = document.createElement('canvas');
-    off.width = (w) * scale;
-    off.height = (h + titleHeight) * scale;
+    off.width = totalWidth * scale;
+    off.height = totalHeight * scale;
     const ctx = off.getContext('2d');
 
     ctx.scale(scale, scale);
 
     // fondo blanco
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, w, h + titleHeight);
+    ctx.fillRect(0, 0, totalWidth, totalHeight);
 
-    // dibujar título centrado
+    // dibujar título (centrado horizontalmente, con margen arriba)
     if (title) {
       ctx.fillStyle = '#111';
       ctx.font = `700 ${titleFontSize}px Inter, Arial, sans-serif`;
       ctx.textBaseline = 'middle';
-      // medir ancho del texto para centrar
-      const textWidth = ctx.measureText(title).width;
-      const x = (w - textWidth) / 2;
-      const y = titleHeight / 2;
+      const metrics = ctx.measureText(title);
+      const textWidth = metrics.width || 0;
+      const x = Math.max(margin, (totalWidth - textWidth) / 2);
+      const y = margin + (titleHeight / 2);
       ctx.fillText(title, x, y);
     }
 
-    ctx.drawImage(canvas, 0, titleHeight);
+    // dibujar el gráfico con margen desde los bordes
+    ctx.drawImage(canvas, margin, margin + titleHeight);
     return off;
   };
 
