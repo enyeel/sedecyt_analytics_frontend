@@ -11,8 +11,9 @@ export default function LoginForm({ onLogin }) {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [isRecovery, setIsRecovery] = useState(false);
     // ⬇️ [NUEVO] Estado para controlar el modal de FAQ ⬇️
-    const [isFaqOpen, setIsFaqOpen] = useState(false); 
+    const [isFaqOpen, setIsFaqOpen] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault(); // Prevenimos que el form recargue la página
@@ -39,6 +40,27 @@ export default function LoginForm({ onLogin }) {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleRecovery = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        // OJO AQUÍ: Esta URL debe ser la de TU app donde pusiste la página de update-password
+        // En local es localhost:3000, en prod será tu dominio de Firebase
+        const redirectUrl = `${window.location.origin}/update-password`;
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: redirectUrl,
+        });
+
+        if (error) {
+            alert("Error: " + error.message);
+        } else {
+            alert("¡Listo! Revisa tu correo para el enlace de recuperación.");
+            setIsRecovery(false); // Regresamos al login por si quieren intentar entrar
+        }
+        setLoading(false);
     };
 
     // ⬇️ [NUEVO] Lista de preguntas y respuestas para el FAQ ⬇️
@@ -68,63 +90,68 @@ export default function LoginForm({ onLogin }) {
     return (
         // El contenedor principal del formulario
         <>
-        <div className={styles.loginContainer}>
-            <h2 className={styles.title}>Iniciar Sesión</h2>
-            <p className={styles.subtitle}>Portal de Analítica SEDECYT</p>
-                
-            {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+            <div className={styles.loginContainer}>
+                <h2 className={styles.title}>Iniciar Sesión</h2>
+                <p className={styles.subtitle}>Portal de Analítica SEDECYT</p>
 
-            <form onSubmit={handleLogin} className={styles.loginForm}>
-                {/* ... inputs y botón de login ... */}
-                <div className={styles.inputGroup}>
-                    <label htmlFor="email">Correo Electrónico</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="password">Contraseña</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                </div>
+                {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
-                <button type="submit" className={styles.btn} disabled={loading}>
-                    {loading ? 'Iniciando...' : 'Iniciar Sesión'}
-                </button>
-            </form>
-            <div className={styles.extraLinks}>
-                <a href="#">¿Olvidaste tu contraseña?</a>
+                <form onSubmit={isRecovery ? handleRecovery : handleLogin} className={styles.loginForm}>
+                    <div className={styles.inputGroup}>
+                        <label htmlFor="email">Correo Electrónico</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+                    {!isRecovery && (
+                        <div className={styles.inputGroup}>
+                            <label htmlFor="password">Contraseña</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                disabled={loading}
+                            />
+                        </div>
+                    )}
+                    <button type="submit" className={styles.btn} disabled={loading}>
+                        {loading ? (isRecovery ? 'Enviando...' : 'Iniciando...') : (isRecovery ? 'Enviar enlace de recuperación' : 'Iniciar Sesión')}
+                    </button>
+                    {isRecovery && (
+                        <button type="button" className={styles.btn} onClick={() => setIsRecovery(false)} disabled={loading}>
+                            Cancelar
+                        </button>
+                    )}
+                </form>
+                <div className={styles.extraLinks}>
+                    <a onClick={() => setIsRecovery(true)}>¿Olvidaste tu contraseña?</a>
+                </div>
             </div>
-        </div>
 
-        {/* ========================================= */ }
-        {/* BOTÓN Y MODAL FAQ ⬇️ */ }
-        {/* ========================================= */ }
-        <button
-            className={styles.faqButton}
-            onClick={() => setIsFaqOpen(true)}
-            aria-label="Abrir Preguntas Frecuentes"
-            title="Ayuda y Preguntas Frecuentes"
-        >
-            ❓
-        </button>
+            {/* ========================================= */}
+            {/* BOTÓN Y MODAL FAQ ⬇️ */}
+            {/* ========================================= */}
+            <button
+                className={styles.faqButton}
+                onClick={() => setIsFaqOpen(true)}
+                aria-label="Abrir Preguntas Frecuentes"
+                title="Ayuda y Preguntas Frecuentes"
+            >
+                ❓
+            </button>
 
-        {isFaqOpen && (
+            {isFaqOpen && (
                 <div className={styles.faqModalOverlay} onClick={() => setIsFaqOpen(false)}>
                     <div
                         className={styles.faqModalContent}
-                        onClick={(e) => e.stopPropagation()} 
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <button
                             className={styles.faqCloseButton}
