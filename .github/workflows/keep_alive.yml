@@ -15,3 +15,7 @@ jobs:
                 curl -X GET "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/auth_users_view?select=count" \
                 -H "apikey: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
                 -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
+      - name: Despertando Google Cloud Run (Backend)
+        run: |
+          curl -X GET "${{ secrets.NEXT_PUBLIC_API_URL }}/api/health" \
+          -I
