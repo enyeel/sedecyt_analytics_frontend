@@ -1,21 +1,100 @@
 name: Supabase Keep-Alive
 
+# This workflow prevents Supabase and Google Cloud Run services from going to sleep
+# due to inactivity. It runs automatically every 3 days and can be triggered manually.
+# 
+# Why this is needed:
+# - Supabase free tier may pause inactive projects
+# - Google Cloud Run scales to zero when inactive, causing cold starts
+# - Regular pings keep services warm and responsive
+
 on:
     schedule:
-        # Se ejecuta a las 00:00 UTC cada 3 días
+        # Runs at 00:00 UTC every 3 days
         - cron: "0 0 */3 * *"
-    workflow_dispatch: # Permite ejecutarlo manualmente para probar
+    workflow_dispatch: # Allows manual execution for testing
 
 jobs:
-  ping_supabase:
+  keep_services_alive:
     runs-on: ubuntu-latest
+    timeout-minutes: 5 # Prevent workflow from hanging indefinitely
+    
     steps:
+      # Step 1: Ping Supabase to prevent it from pausing
       - name: Ping Supabase API
+        id: ping_supabase
+        continue-on-error: true # Don't fail the workflow if Supabase ping fails
         run: |
-                curl -X GET "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/auth_users_view?select=count" \
-                -H "apikey: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
-                -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
-      - name: Despertando Google Cloud Run (Backend)
+          echo "🔄 Pinging Supabase API..."
+          
+          RESPONSE=$(curl -X GET \
+            --max-time 30 \
+            --connect-timeout 10 \
+            --write-out "\nHTTP_CODE:%{http_code}\nTIME_TOTAL:%{time_total}" \
+            --silent \
+            --show-error \
+            "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/auth_users_view?select=count" \
+            -H "apikey: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          TIME_TOTAL=$(echo "$RESPONSE" | grep "TIME_TOTAL:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d' | sed '/TIME_TOTAL:/d')
+          
+          echo "📊 Supabase Response Code: $HTTP_CODE"
+          echo "⏱️  Response Time: ${TIME_TOTAL}s"
+          echo "📄 Response Body: $BODY"
+          
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Supabase ping successful"
+            echo "supabase_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Supabase ping returned non-2xx status: $HTTP_CODE"
+            echo "supabase_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      # Step 2: Wake up Google Cloud Run backend to prevent cold starts
+      - name: Wake up Google Cloud Run (Backend)
+        id: wake_backend
+        continue-on-error: true # Don't fail the workflow if backend ping fails
         run: |
-          curl -X GET "${{ secrets.NEXT_PUBLIC_API_URL }}/api/health" \
-          -I
+          echo "🔄 Waking up Google Cloud Run backend..."
+          
+          RESPONSE=$(curl -X GET \
+            --max-time 30 \
+            --connect-timeout 10 \
+            --write-out "\nHTTP_CODE:%{http_code}\nTIME_TOTAL:%{time_total}" \
+            --silent \
+            --show-error \
+            "${{ secrets.NEXT_PUBLIC_API_URL }}/api/health" \
+            -H "Accept: application/json")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          TIME_TOTAL=$(echo "$RESPONSE" | grep "TIME_TOTAL:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d' | sed '/TIME_TOTAL:/d')
+          
+          echo "📊 Backend Response Code: $HTTP_CODE"
+          echo "⏱️  Response Time: ${TIME_TOTAL}s"
+          echo "📄 Response Body: $BODY"
+          
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Backend wake-up successful"
+            echo "backend_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  Backend wake-up returned non-2xx status: $HTTP_CODE"
+            echo "backend_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      # Step 3: Summary of results
+      - name: Summary
+        run: |
+          echo "## 📋 Keep-Alive Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Supabase | ${{ steps.ping_supabase.outputs.supabase_status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend (Cloud Run) | ${{ steps.wake_backend.outputs.backend_status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏰ Execution time: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY

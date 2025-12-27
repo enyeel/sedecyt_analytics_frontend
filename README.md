@@ -1,12 +1,12 @@
 # SEDECyT Analytics - Frontend Dashboard
 
-![Status: In Development](https://img.shields.io/badge/status-in%20development-yellow)
+![Status: Production](https://img.shields.io/badge/status-production-green)
 ![Platform: Firebase](https://img.shields.io/badge/Platform-Firebase-orange)
 ![Database: Supabase](https://img.shields.io/badge/Database-Supabase%20(Postgres)-green)
 
 This is the serverless frontend dashboard for **SEDECyT Analytics**. This application consumes the high-speed API built by the `sedecyt_analytics_backend` to provide a modern, responsive, and real-time data visualization experience for the Secretariat of Economic Development, Science, and Technology (SEDECyT) of Aguascalientes.
 
-* **View the Backtend:** [sedecyt_analytics_backend](https://github.com/enyeel/sedecyt_analytics_backend)
+* **View the Backend:** [sedecyt_analytics_backend](https://github.com/enyeel/sedecyt_analytics_backend)
 * **View the Frontend:** `sedecyt_analytics_frontend` (This repo)
 ***
 
@@ -24,8 +24,9 @@ This frontend solves the problem by consuming the clean, reliable "master truth 
 Instead of static PowerPoints, this platform allows SEDECyT staff to:
 1.  **Log In Securely:** Using an internal account authenticated by **Supabase Auth**.
 2.  **View Real-Time Data:** Browse high-level dashboards in a responsive grid.
-3.  **Drill Down:** Select a specific dashboard (e.g., "Industrial Summary") to see detailed charts and graphs.
-4.  **Analyze:** Interact with dynamic charts (Bar, Pie, LIne) rendered instantly with **Chart.js**
+3.  **Drill Down:** Select a specific dashboard (e.g., "Análisis de Empresas") to see detailed charts and graphs.
+4.  **Analyze:** Interact with dynamic charts (Bar, Pie, Line) rendered instantly with **Chart.js**.
+5.  **Explore Raw Data:** Access a comprehensive table view to inspect the underlying data validated by the ETL pipeline.
 
 This decouples the complex data-cleaning logic (Backend) from the user-facing presentation (Frontend), allowing for faster development and a much better user experience.
 
@@ -33,27 +34,35 @@ This decouples the complex data-cleaning logic (Backend) from the user-facing pr
 
 ## Tech Stack
 
-* **Framework:** **Next.js 14+** (App Router)
-* **Language:** **Javascript (React)**
-* **Authentication:** **Supabase Auth** (Handless secure login and session management)
+* **Framework:** **Next.js 16+** (App Router)
+* **Language:** **JavaScript (React 19)**
+* **Authentication:** **Supabase Auth** (Handles secure login and session management)
+* **Data Fetching:** **SWR** (for efficient data caching and revalidation)
 * **Hosting:** **Firebase Hosting**
-* **CI/CD:** **Github Actions** (Automated build & deploy on `git push`)
+* **CI/CD:** **GitHub Actions** (Automated build & deploy on `git push`)
 * **Data Visualization:** **Chart.js** (via `react-chartjs-2`)
-* **Styling:** **CSS Modules** & Global CSS Variables
+* **PDF Export:** **jsPDF** (for chart export functionality)
+* **Styling:** **CSS Modules** & Global CSS Variables with dark mode support
 
 ***
 
-## Project Status: 🚧 In Development
+## Project Status: ✅ Production Ready
 
-This project is actively being developed as part of a university internship.
+This project is **fully deployed and operational** as part of a university internship program.
 
-* **Core Architecture:** The Next.js 14 App Router structure is in place.
-* **Authentication:** The backend is successfully containerized with Docker and deployable to Google Cloud Run.
-* **Component Architecture:** The "Master-Detail" component logic (`Login` -> `Home Grid` -> `Detail View`) is complete.
-* **CI/CD:** The GitHub Actions workflow for automated deployment to Firebase Hosting is **complete**.
-* **Data:** Currently using mock/static data (`MOCK_DASHBOARDS` en `page.js`).
-
-Immediate next steps involve replacing the mock data with live API calls to the backend and refining the UI/UX.
+* **Core Architecture:** The Next.js 16 App Router structure is complete and production-ready.
+* **Authentication:** Full Supabase Auth integration with token-based API authentication.
+* **Component Architecture:** Complete "Master-Detail" component logic (`Login` -> `Home Grid` -> `Detail View` -> `Data Tables`).
+* **CI/CD:** The GitHub Actions workflow for automated deployment to Firebase Hosting is **fully operational**.
+* **Data Integration:** **Fully integrated** with the live backend API. All dashboards fetch real-time data from Supabase via the backend API.
+* **Features:**
+  * ✅ Interactive dashboard grid with real-time data
+  * ✅ Detailed dashboard views with multiple chart types
+  * ✅ Comprehensive data table explorer (companies, contacts, responses)
+  * ✅ Chart export to PDF functionality
+  * ✅ Responsive design with dark mode
+  * ✅ Loading states and error boundaries
+  * ✅ Sidebar navigation for quick dashboard switching
 
 ***
 
@@ -63,23 +72,33 @@ Immediate next steps involve replacing the mock data with live API calls to the 
 .
 ├── .github/
 │   └── workflows/
-│       └── firebase-hosting-merge.yml  (CI/CD Pipeline)
+│       ├── firebase-hosting-merge.yml      # CI/CD Pipeline (main branch)
+│       ├── firebase-hosting-pull-request.yml # Preview deployments
+│       └── keep_alive.yml                   # Service keep-alive workflow
 ├── app/
 │   ├── components/
-│   │   ├── ChartCard.js          (The chart "unpacker")
-│   │   ├── DashboardDetail.js    (2 column view: Sidebar + Charts)
-│   │   ├── DashboardHome.js      (Youtube style "Home" view)
-│   │   └── LoginForm.js          (Login Form)
+│   │   ├── AppHeader.js                    # Top navigation bar
+│   │   ├── ChartCard.js                    # Chart renderer with export
+│   │   ├── DashboardDetail.js              # Detailed dashboard view
+│   │   ├── DashboardHome.js                # Dashboard grid (home view)
+│   │   ├── DataDrawer.js                   # Bottom drawer for data tables
+│   │   ├── DataTable.js                    # Interactive data table component
+│   │   ├── ErrorBoundary.js                # Error handling component
+│   │   ├── LoginForm.js                    # Authentication form
+│   │   ├── Sidebar.js                     # Navigation sidebar
+│   │   └── SkeletonLoader.js              # Loading state component
+│   ├── update-password/
+│   │   └── page.js                        # Password update page
 │   ├── lib/
-│   │   └── supabaseClient.js     (Supabase Client)
-│   ├── globals.css             (Official color palette and base styles)
-│   ├── layout.js               (App Framework)
-│   └── page.js                 (The “brain” - Goalkeeper/View Director)
+│   │   └── supabaseClient.js              # Supabase client configuration
+│   ├── globals.css                        # Global styles & color palette
+│   ├── layout.js                          # Root layout
+│   └── page.js                           # Main page (view orchestrator)
 ├── public/
-│   └── logo-sedec.png
+│   └── [logos and icons]                  # Static assets
 ├── .gitignore
-├── firebase.json               (Firebase Hosting Config)
-├── next.config.mjs             (Next.js Config for `output: 'export'`)
+├── firebase.json                          # Firebase Hosting config
+├── next.config.mjs                        # Next.js config (static export)
 ├── package.json
 └── README.md
 ```
@@ -101,7 +120,7 @@ Instructions to get the project running locally.
 
 ```bash
 git clone https://github.com/enyeel/sedecyt_analytics_frontend.git
-cd sedecyt_analytics_fronend
+cd sedecyt_analytics_frontend
 ```
 
 ***
@@ -120,6 +139,9 @@ This project uses environment variables. Create a `.env.local` file in the root 
 # Supabase Credentials
 NEXT_PUBLIC_SUPABASE_URL="https://[your-project-id].supabase.co"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="[your-supabase-anon-key]"
+
+# Backend API URL
+NEXT_PUBLIC_API_URL="https://[your-backend-url].run.app"
 ```
 
 ***
@@ -129,6 +151,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="[your-supabase-anon-key]"
 ```bash
 npm run dev
 ```
+
 The app will now be running and accessible at http://localhost:3000.
 
 ***
@@ -138,12 +161,67 @@ The app will now be running and accessible at http://localhost:3000.
 Deployment is **fully automated** via GitHub Actions.
 
 1.  **Configure Secrets:** The repository admin must set the following GitHub Repository Secrets:
-* `NEXT_PUBLIC_SUPABASE_URL`
-* `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-* `FIREBASE_SERVICE_ACCOUNT_SEDECYT_ANALYTICS`
+    * `NEXT_PUBLIC_SUPABASE_URL`
+    * `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+    * `NEXT_PUBLIC_API_URL`
+    * `FIREBASE_SERVICE_ACCOUNT_SEDECYT_ANALYTICS`
 
 2.  **Push to Main:** Any `git push` or merge to the `main` branch will automatically trigger the workflow defined in `.github/workflows/firebase-hosting-merge.yml`.
-3.  **Live:** The workflow will install dependencies, build the static site (`npm run build`), and deploy the `out/` folder to Firebase Hosting.
+
+3.  **Live:** The workflow will:
+    * Install dependencies (with npm cache optimization)
+    * Build the static site (`npm run build`)
+    * Deploy the `out/` folder to Firebase Hosting
+    * The site will be live immediately after successful deployment
+
+***
+
+## Features
+
+### Dashboard Views
+
+* **Home Grid:** Browse all available dashboards in a responsive card layout
+* **Detail View:** Deep dive into a specific dashboard with multiple interactive charts
+* **Sidebar Navigation:** Quick access to switch between dashboards without returning to home
+
+### Data Exploration
+
+* **Data Table Drawer:** Access comprehensive table views of all data
+* **Three Data Views:**
+  * **Companies:** Complete company information with formatted columns
+  * **Contacts:** Contact details with cleaned phone numbers and emails
+  * **Responses:** Full historical response data with certification tracking
+* **Interactive Tables:** Sortable columns, search functionality, and modal views for long text fields
+
+### Chart Features
+
+* **Multiple Chart Types:** Bar charts, Pie charts, and Line charts
+* **Export to PDF:** Download any chart as a PDF document
+* **Responsive Design:** Charts adapt to different screen sizes
+* **Dark Mode Support:** Optimized color palette for dark theme
+
+### User Experience
+
+* **Authentication:** Secure login with Supabase Auth
+* **Session Management:** Automatic token refresh and session handling
+* **Loading States:** Skeleton loaders for smooth user experience
+* **Error Handling:** Comprehensive error boundaries and user-friendly error messages
+* **Performance:** SWR caching for instant data loading and reduced API calls
+
+***
+
+## API Integration
+
+The frontend communicates with the backend API using authenticated requests:
+
+* **Authentication:** All API requests include `Authorization: Bearer <token>` header
+* **Data Fetching:** Uses SWR for intelligent caching and revalidation
+* **Endpoints Used:**
+  * `GET /api/dashboards` - List of all dashboards
+  * `GET /api/dashboards/<slug>` - Complete dashboard with charts
+  * `GET /api/data/companies-view` - Companies table data
+  * `GET /api/data/contacts-view` - Contacts table data
+  * `GET /api/data/responses-view` - Responses table data
 
 ***
 
@@ -159,9 +237,11 @@ Deployment is **fully automated** via GitHub Actions.
 
 ## 🔮 Future Improvements & Planned Features
 
-* Replace all `MOCK_DASHBOARDS` data with `fetch` calls to the live [backend API](https://github.com/enyeel/sedecyt-analytics-frontend).
-* Full styling of all components (cards, sidebars, charts) based on the official color palette.
-* Implement functionality for "Dark Mode" and "Search" buttons in the header.
-* Build polished "Loading" spinners and "Error" messages for API calls.
-* Explore "drill-down" features for individual charts (e.g., clicking a bar to see the raw data). 
-  
+* Optimize chart colors for automatic dark mode detection (HSL color adjustments)
+* Add advanced filtering and search capabilities to data tables
+* Implement data export functionality (CSV/Excel) from table views
+* Add dashboard customization options (user preferences)
+* Enhance chart interactivity (drill-down features, data point tooltips)
+* Add real-time data updates via WebSockets or polling
+* Implement comprehensive analytics tracking
+* Add accessibility improvements (ARIA labels, keyboard navigation)
