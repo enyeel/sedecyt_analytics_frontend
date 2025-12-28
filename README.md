@@ -22,7 +22,7 @@
 
 ---
 
-## 💡 El Problema
+## 💡 The Problem
 
 Currently, SEDECyT's process for generating key economic reports is **manual, slow, and error-prone**:
 
@@ -34,7 +34,7 @@ Currently, SEDECyT's process for generating key economic reports is **manual, sl
 
 ---
 
-## 🛠️ La Solución
+## 🛠️ The Solution
 
 This frontend provides a **modern, interactive dashboard** that transforms how SEDECyT staff interact with economic data:
 
@@ -121,7 +121,9 @@ This frontend provides a **modern, interactive dashboard** that transforms how S
 
 ---
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
+
+
 
 <!-- 
   📊 MULTIMEDIA PLACEHOLDER - DIAGRAMA DE ARQUITECTURA
@@ -179,16 +181,16 @@ graph TB
     C -->|Render| H[Data Tables]
 ```
 
-**Flujo de Usuario:**
-1. **Login:** Usuario se autentica con Supabase
-2. **Home:** Ve grid de dashboards disponibles
-3. **Detail:** Selecciona dashboard → ve gráficos interactivos
-4. **Explore:** Abre drawer de tablas para datos crudos
-5. **Export:** Descarga gráficos como PDF
+**User Flow:**
+1. **Login:** User authenticates with Supabase
+2. **Home:** Sees a grid of available dashboards
+3. **Detail:** Selects a dashboard → sees interactive charts
+4. **Explore:** Opens the table drawer for raw data
+5. **Export:** Downloads charts as PDF
 
 ---
 
-## 🚀 Stack Tecnológico
+## 🚀 Tech Stack
 
 ![Next.js](https://img.shields.io/badge/-Next.js-black?style=flat&logo=next.js) ![React](https://img.shields.io/badge/-React-black?style=flat&logo=react) ![Chart.js](https://img.shields.io/badge/-Chart.js-black?style=flat&logo=chart.js) ![Supabase](https://img.shields.io/badge/-Supabase-black?style=flat&logo=supabase) ![Firebase](https://img.shields.io/badge/-Firebase-black?style=flat&logo=firebase) ![SWR](https://img.shields.io/badge/-SWR-black?style=flat)
 
@@ -204,9 +206,9 @@ graph TB
 
 ---
 
-## 📚 Documentación Técnica
+## 📚 Technical Documentation
 
-### Estructura del Proyecto
+### Project Structure
 
 ```
 app/
@@ -348,8 +350,6 @@ See `.github/workflows/firebase-hosting-merge.yml` for details.
 Interested in implementing a similar solution for your organization?
 
 * 📧 **Email:** [anjel.hdz22@gmail.com](mailto:anjel.hdz22@gmail.com)
-* 💼 **LinkedIn:** [Your LinkedIn Profile]
-* 🌐 **Portfolio:** [Your Portfolio Website]
 
 ---
 
