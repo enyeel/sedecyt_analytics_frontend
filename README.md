@@ -1,30 +1,6 @@
 <div align="center">
 
-<!-- 
-  📸 MULTIMEDIA PLACEHOLDER - BANNER IMAGE
-  ==========================================
-  INSTRUCCIONES PARA CREAR EL BANNER:
-  
-  1. Dimensiones recomendadas: 1280x640px
-  2. Debe incluir:
-     - Nombre del proyecto: "SEDECyT Analytics Dashboard"
-     - Tagline: "Real-Time Economic Data Visualization"
-     - Captura de pantalla del dashboard (opcional)
-     - Colores de marca (magenta, azul, modo oscuro)
-  
-  3. Herramientas recomendadas:
-     - Canva (plantillas de GitHub banners)
-     - Figma
-     - Photoshop/GIMP
-     
-  4. Una vez creado, sube la imagen a:
-     - Carpeta /docs/images/ del repositorio, o
-     - Un servicio de hosting de imágenes
-     
-  5. Reemplaza la línea de abajo con:
-     <img src="docs/images/banner-frontend.png" alt="SEDECyT Analytics Dashboard" width="100%">
--->
-  <img src="https://via.placeholder.com/1280x640/6B46C1/FFFFFF?text=SEDECyT+Analytics+Dashboard" alt="Project Banner" width="100%">
+  <img src="docs/images/frontend.png" alt="SEDECyT Analytics Frontend - Data Visualization Dashboard" width="100%">
   
   <br/>
   
